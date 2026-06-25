@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Code2, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { SITE, PROFILE } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
@@ -55,9 +55,14 @@ export function TopNav() {
         <nav className="container flex h-16 items-center justify-between">
           {/* Mark + wordmark lockup */}
           <a href="#top" className="group flex items-center gap-2.5" onClick={() => setMenuOpen(false)}>
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-iris-400 to-iris-600 text-white shadow-glow-iris">
-              <Code2 className="h-4 w-4" />
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/favicon.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 drop-shadow-[0_0_10px_rgba(138,99,255,0.25)]"
+            />
             <span className="flex items-baseline gap-2">
               <span className="font-display text-base font-semibold tracking-tight text-white">
                 {SITE.name}
