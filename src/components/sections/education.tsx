@@ -13,9 +13,9 @@ export function Education() {
       <div className="container">
         <motion.div {...reveal} variants={staggerContainer} className="mb-14 max-w-2xl">
           <motion.div variants={fadeUp} className="mb-4 flex items-center gap-3">
-            <span className="font-mono text-sm text-iris-300">04</span>
+            <span className="font-mono text-base text-iris-300">04</span>
             <span className="hairline max-w-[60px]" />
-            <span className="label-mono">Education &amp; Certs</span>
+            <span className="label-mono-lg">Education &amp; Certs</span>
           </motion.div>
           <motion.h2 variants={fadeUp} className="text-display text-white">
             The credentials.

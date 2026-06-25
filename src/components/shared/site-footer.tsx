@@ -1,5 +1,6 @@
 import { Code2 } from "lucide-react";
 import { SITE, PROFILE, SOCIALS } from "@/lib/content";
+import { PandaToggle } from "./panda-toggle";
 
 export function SiteFooter() {
   return (
@@ -29,6 +30,11 @@ export function SiteFooter() {
         </div>
 
         <div className="font-mono text-xs text-zinc-600">© 2026 {PROFILE.name}</div>
+      </div>
+
+      {/* Panda visibility toggle — the very bottom of the page */}
+      <div className="container mt-8 flex justify-center">
+        <PandaToggle />
       </div>
     </footer>
   );

@@ -85,6 +85,11 @@
     @apply font-mono text-[10px] uppercase tracking-widelabel text-zinc-400;
   }
 
+  /* Larger mono label — section header eyebrows */
+  .label-mono-lg {
+    @apply font-mono text-sm uppercase tracking-widelabel text-zinc-400;
+  }
+
   /* Live status dot */
   .status-dot {
     @apply inline-block h-2 w-2 rounded-full;

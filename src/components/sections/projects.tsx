@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, ArrowRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/lib/content";
@@ -27,9 +28,9 @@ export function Projects() {
         {/* Section header */}
         <motion.div {...reveal} variants={staggerContainer} className="mb-14 max-w-2xl">
           <motion.div variants={fadeUp} className="mb-4 flex items-center gap-3">
-            <span className="font-mono text-sm text-iris-300">01</span>
+            <span className="font-mono text-base text-iris-300">01</span>
             <span className="hairline max-w-[60px]" />
-            <span className="label-mono">Selected work</span>
+            <span className="label-mono-lg">Selected work</span>
           </motion.div>
           <motion.h2 variants={fadeUp} className="text-display text-white">
             Things I&apos;ve designed, built, and shipped.
@@ -82,7 +83,18 @@ function ProjectCard({ project: p }: { project: Project }) {
             <span className="text-zinc-700">·</span>
             <span className={cn("label-mono", STATUS[p.status])}>{p.status}</span>
           </div>
-          <h3 className="mt-2 font-display text-2xl font-semibold text-white">{p.name}</h3>
+          <div className="mt-2 flex items-center gap-3">
+            {p.logo && (
+              <Image
+                src={p.logo}
+                alt={`${p.name} logo`}
+                width={40}
+                height={40}
+                className="h-10 w-10 shrink-0 rounded-lg object-cover ring-1 ring-white/10 bg-white/[0.03]"
+              />
+            )}
+            <h3 className="font-display text-2xl font-semibold text-white">{p.name}</h3>
+          </div>
           <p className="mt-1.5 max-w-lg text-zinc-400">{p.tagline}</p>
         </div>
 

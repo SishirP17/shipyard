@@ -6,8 +6,6 @@ import { SOCIALS } from "@/lib/content";
 import { fadeUp, reveal, staggerContainer } from "@/lib/motion";
 
 export function Contact() {
-  const email = SOCIALS.find((s) => s.label === "Email");
-
   return (
     <section id="contact" className="relative scroll-mt-20 py-24 lg:py-32">
       <div className="container">
@@ -20,8 +18,8 @@ export function Contact() {
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-[600px] -translate-x-1/2 rounded-full bg-iris-500/15 blur-3xl" />
 
           <motion.div variants={fadeUp} className="relative mb-5 flex items-center justify-center gap-3">
-            <span className="font-mono text-sm text-iris-300">06</span>
-            <span className="label-mono">Contact</span>
+            <span className="font-mono text-base text-iris-300">06</span>
+            <span className="label-mono-lg">Contact</span>
           </motion.div>
 
           <motion.h2 variants={fadeUp} className="relative text-display text-white">
@@ -33,15 +31,6 @@ export function Contact() {
             conversations. Whether it&apos;s a role, a collaboration, or just to say hi —
             my inbox is open.
           </motion.p>
-
-          {email && (
-            <motion.div variants={fadeUp} className="relative mt-9">
-              <a href={email.href} className="btn-iris group text-base">
-                {email.handle}
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </motion.div>
-          )}
 
           {/* Social links */}
           <motion.div

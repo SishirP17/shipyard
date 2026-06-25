@@ -24,9 +24,9 @@ export function Services() {
           {/* LEFT: pitch */}
           <motion.div {...reveal} variants={staggerContainer} className="lg:col-span-5">
             <motion.div variants={fadeUp} className="mb-4 flex items-center gap-3">
-              <span className="font-mono text-sm text-iris-300">05</span>
+              <span className="font-mono text-base text-iris-300">05</span>
               <span className="hairline max-w-[60px]" />
-              <span className="label-mono">Work with me</span>
+              <span className="label-mono-lg">Work with me</span>
             </motion.div>
 
             {SERVICES_INTRO.available && (

@@ -1,0 +1,32 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="north" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#7AA3FF"/>
+      <stop offset="1" stop-color="#5B8CFF"/>
+    </linearGradient>
+    <linearGradient id="south" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#3DD68C"/>
+      <stop offset="1" stop-color="#2FB87A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Transparent background: the compass mark only, sized for the Android
+       adaptive-icon safe zone (centered ~62% of the canvas). -->
+  <g transform="rotate(18 512 512)">
+    <circle cx="512" cy="512" r="250" fill="none" stroke="#3a4d76" stroke-width="20"/>
+    <circle cx="512" cy="512" r="250" fill="none" stroke="#4a5f8f" stroke-width="20" stroke-dasharray="5 44" stroke-linecap="round"/>
+
+    <g fill="#7184a8">
+      <rect x="504" y="222" width="16" height="48" rx="8"/>
+      <rect x="504" y="754" width="16" height="48" rx="8"/>
+      <rect x="754" y="504" width="48" height="16" rx="8"/>
+      <rect x="222" y="504" width="48" height="16" rx="8"/>
+    </g>
+
+    <polygon points="512,290 556,512 468,512" fill="url(#north)"/>
+    <polygon points="512,734 556,512 468,512" fill="url(#south)"/>
+
+    <circle cx="512" cy="512" r="38" fill="#0B1220"/>
+    <circle cx="512" cy="512" r="20" fill="#F4F7FF"/>
+  </g>
+</svg>

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ScaredyPanda } from "@/components/shared/scaredy-panda";
+import { PandaProvider } from "@/components/shared/panda-context";
 import { SITE, PROFILE, SOCIALS } from "@/lib/content";
 import "./globals.css";
 
@@ -95,7 +97,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           aria-hidden
           className="pointer-events-none fixed inset-0 -z-10 bg-noise opacity-[0.3] mix-blend-overlay"
         />
-        {children}
+        <PandaProvider>
+          {children}
+          <ScaredyPanda />
+        </PandaProvider>
         <Analytics />
         <SpeedInsights />
       </body>

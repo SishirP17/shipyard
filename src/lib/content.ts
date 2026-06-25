@@ -93,6 +93,7 @@ export const PROFILE = {
 export type Project = {
   slug: string;
   name: string;
+  logo?: string;
   tagline: string;
   year: string;
   status: "Live" | "In progress" | "Archived";
@@ -112,6 +113,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "rayhealth-evv",
     name: "RayHealth EVV",
+    logo: "/logos/rayhealth-evv.svg",
     tagline: "A full-stack Electronic Visit Verification platform for home-care agencies.",
     year: "2026",
     status: "Live",
@@ -129,6 +131,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "helix-studio",
     name: "Helix Studio",
+    logo: "/logos/helix-studio.svg",
     tagline: "An AI operating system for software engineering — a team of agents that build inside your codebase.",
     year: "2026",
     status: "Live",
@@ -145,6 +148,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "pact",
     name: "Pact",
+    logo: "/logos/pact.png",
     tagline: "AI-guided legal paperwork on demand — from plain-English intake to a notarized document.",
     year: "2026",
     status: "In progress",
@@ -160,6 +164,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "roamkit",
     name: "Roamkit",
+    logo: "/logos/roamkit.svg",
     tagline: "An offline-first travel toolkit for iOS, Android, and web.",
     year: "2026",
     status: "In progress",
