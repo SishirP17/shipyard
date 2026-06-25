@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  X, ArrowRight, ArrowLeft, Check, Send, CheckCircle2, Copy, Plus,
+  X, ArrowRight, ArrowLeft, Check, Send, CheckCircle2, Loader2, Plus,
 } from "lucide-react";
 import { SERVICES } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -32,14 +32,16 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [company, setCompany] = useState(""); // honeypot — humans never see it
 
   useEffect(() => setMounted(true), []);
 
   // Reset to a clean state whenever it re-opens.
   useEffect(() => {
     if (open) {
-      setStep(0); setDir(1); setSent(false); setCopied(false);
+      setStep(0); setDir(1); setSent(false); setSending(false); setError(null);
     }
   }, [open]);
 
@@ -91,18 +93,22 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
     setTypes((prev) => (prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]));
   }
 
-  function send() {
-    window.location.href = mailto;
-    setSent(true);
-  }
-
-  async function copyBrief() {
+  async function send() {
+    setSending(true);
+    setError(null);
     try {
-      await navigator.clipboard.writeText(`To: ${RECIPIENT}\nSubject: ${subject}\n\n${brief}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard blocked — no-op */
+      const res = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ types, timeline, budget, name, email, message, company }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) throw new Error(json.error || "Something went wrong.");
+      setSent(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
+      setSending(false);
     }
   }
 
@@ -159,7 +165,7 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
             {/* body */}
             <div className="flex-1 overflow-y-auto px-6 py-6">
               {sent ? (
-                <SuccessView copied={copied} onCopy={copyBrief} mailto={mailto} />
+                <SuccessView name={name} email={email} onClose={onClose} />
               ) : (
                 <AnimatePresence mode="wait" custom={dir}>
                   <motion.div
@@ -243,6 +249,17 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
                               className="input resize-none"
                             />
                           </Field>
+                          {/* honeypot — invisible to people, catches bots */}
+                          <input
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            aria-hidden="true"
+                            value={company}
+                            onChange={(e) => setCompany(e.target.value)}
+                            className="sr-only"
+                            placeholder="Company"
+                          />
                         </div>
                       </Step>
                     )}
@@ -268,6 +285,16 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
               )}
             </div>
 
+            {/* error banner */}
+            {error && !sent && (
+              <div className="mx-6 mb-1 flex items-center justify-between gap-3 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-2.5 text-sm text-rose-200">
+                <span>{error}</span>
+                <a href={mailto} className="shrink-0 font-medium text-white underline underline-offset-2">
+                  Email directly
+                </a>
+              </div>
+            )}
+
             {/* footer */}
             {!sent && (
               <div className="flex items-center justify-between gap-3 border-t border-white/[0.06] px-6 py-4">
@@ -288,9 +315,13 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </button>
                 ) : (
-                  <button onClick={send} className="btn-iris group text-sm">
-                    Send brief
-                    <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <button onClick={send} disabled={sending} className="btn-iris group text-sm disabled:opacity-60">
+                    {sending ? "Sending…" : "Send brief"}
+                    {sending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    )}
                   </button>
                 )}
               </div>
@@ -305,7 +336,8 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
 
 /* ----------------------------- small pieces ----------------------------- */
 
-function SuccessView({ copied, onCopy, mailto }: { copied: boolean; onCopy: () => void; mailto: string }) {
+function SuccessView({ name, email, onClose }: { name: string; email: string; onClose: () => void }) {
+  const first = name.trim().split(" ")[0];
   return (
     <div className="py-4 text-center">
       <motion.div
@@ -316,16 +348,14 @@ function SuccessView({ copied, onCopy, mailto }: { copied: boolean; onCopy: () =
       >
         <CheckCircle2 className="h-8 w-8" />
       </motion.div>
-      <h4 className="mt-5 font-display text-xl font-semibold text-white">Your email is ready to go.</h4>
+      <h4 className="mt-5 font-display text-xl font-semibold text-white">Message sent.</h4>
       <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-400">
-        Your mail app should have opened with the brief pre-filled. If it didn&apos;t, copy it or open it manually below.
+        Thanks{first ? `, ${first}` : ""} — it&apos;s in Sishir&apos;s inbox. You&apos;ll get a reply
+        at <span className="text-zinc-200">{email}</span> soon.
       </p>
-      <div className="mt-6 flex items-center justify-center gap-3">
-        <button onClick={onCopy} className="btn-ghost text-sm">
-          <Copy className="h-3.5 w-3.5" /> {copied ? "Copied!" : "Copy brief"}
-        </button>
-        <a href={mailto} className="btn-iris text-sm">Open email</a>
-      </div>
+      <button onClick={onClose} className="btn-iris mt-6 text-sm">
+        Done
+      </button>
     </div>
   );
 }
