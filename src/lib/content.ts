@@ -31,7 +31,7 @@ export const SITE = {
   tagline: "software that ships",
   // Canonical production URL — used for metadata, OG image, robots, sitemap.
   // Update this if you add a custom domain.
-  url: "https://shipyard-sishir-phuyal-s-projects.vercel.app",
+  url: "https://shipyard-delta.vercel.app",
 };
 
 export const PROFILE = {
