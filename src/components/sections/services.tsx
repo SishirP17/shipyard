@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SERVICES, SERVICES_INTRO } from "@/lib/content";
 import { fadeUp, reveal, staggerContainer } from "@/lib/motion";
+import { ProjectModal } from "@/components/services/project-modal";
 
 /**
  * Services — the "build with me" pitch. Positions the site as a small software
@@ -11,6 +13,8 @@ import { fadeUp, reveal, staggerContainer } from "@/lib/motion";
  * what can be built for them and how to start.
  */
 export function Services() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <section id="services" className="relative scroll-mt-20 py-24 lg:py-32">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -46,10 +50,10 @@ export function Services() {
             </motion.p>
 
             <motion.div variants={fadeUp} className="mt-8">
-              <a href={SERVICES_INTRO.cta.href} className="btn-iris group text-base">
+              <button onClick={() => setModalOpen(true)} className="btn-iris group text-base">
                 {SERVICES_INTRO.cta.label}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </a>
+              </button>
             </motion.div>
           </motion.div>
 
@@ -75,6 +79,8 @@ export function Services() {
           </motion.div>
         </div>
       </div>
+
+      <ProjectModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   );
 }

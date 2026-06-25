@@ -133,6 +133,13 @@
            bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-300;
   }
 
+  /* Form input — used in the project-inquiry modal */
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5
+           text-sm text-white placeholder:text-zinc-600 outline-none
+           transition-colors focus:border-iris-400/50;
+  }
+
   /* Code-bracket frame — the builder motif replacing HUD corners.
      Adds soft iris brackets at top-left / bottom-right of a relative box. */
   .bracket-frame::before,
