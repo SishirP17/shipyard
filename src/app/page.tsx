@@ -8,6 +8,7 @@ import { About } from "@/components/sections/about";
 import { Education } from "@/components/sections/education";
 import { Services } from "@/components/sections/services";
 import { Contact } from "@/components/sections/contact";
+import { EasterEggs } from "@/components/fx/easter-eggs";
 
 /**
  * Portfolio landing page.
@@ -40,6 +41,7 @@ export default function Home() {
       <Services />
       <Contact />
       <SiteFooter />
+      <EasterEggs />
     </main>
   );
 }

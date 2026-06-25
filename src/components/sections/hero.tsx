@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowRight, Mail, FileText } from "lucide-react";
 import { PROFILE, NOW_TICKER } from "@/lib/content";
 import { blurIn, fadeUp, staggerContainer, springSoft } from "@/lib/motion";
+import { CursorGlow } from "@/components/fx/cursor-glow";
+import { Tilt } from "@/components/fx/tilt";
+import { ScrambleText } from "@/components/fx/scramble-text";
 
 /**
  * Landing hero.
@@ -16,6 +19,7 @@ export function Hero() {
 
   return (
     <section className="relative pt-32 pb-24 lg:pt-44 lg:pb-32">
+      <CursorGlow />
       <div className="container relative grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
         {/* LEFT */}
         <motion.div
@@ -26,8 +30,10 @@ export function Hero() {
         >
           <motion.div variants={fadeUp} className="mb-8 flex items-center gap-3">
             <span className="status-dot status-dot-aqua" />
-            <span className="label-mono">
-              {PROFILE.role} · <span className="text-aqua-200">{PROFILE.location}</span>
+            <span className="flex items-center gap-1.5">
+              <ScrambleText text={PROFILE.role} className="label-mono" />
+              <span className="label-mono text-zinc-600">·</span>
+              <ScrambleText text={PROFILE.location} className="label-mono text-aqua-200" />
             </span>
           </motion.div>
 
@@ -77,8 +83,11 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springSoft, delay: 0.35 }}
           className="relative lg:col-span-5"
+          style={{ perspective: "1200px" }}
         >
-          <TerminalCard />
+          <Tilt className="relative">
+            <TerminalCard />
+          </Tilt>
         </motion.div>
       </div>
 
