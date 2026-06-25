@@ -118,9 +118,9 @@ export const PROJECTS: Project[] = [
     problem:
       "Home-care agencies have to verify and document every caregiver visit for Medicaid compliance — but the tools to do it are clunky and fragmented across web, mobile, and state reporting.",
     build:
-      "Built and deployed a full-stack EVV platform in a scalable monorepo, with shared domain models and validation logic powering web, mobile (Capacitor), and backend from a single codebase. Caregiver clock-in/out with GPS visit verification, scheduling, and authorization management; secure auth with HttpOnly cookie sessions, CSRF protection, role-based access, and audit logging. Integrated Sandata and HHAeXchange export formats, plus AI-assisted workflows via Claude (AWS Bedrock) and Gemini.",
+      "Built and deployed a full-stack EVV platform as a scalable monorepo, with shared domain models and validation logic so the web app, mobile app (Capacitor), and backend stay type-safe and in lockstep. Caregiver clock-in/out with GPS visit verification, scheduling, and authorization management; secure auth with HttpOnly cookie sessions, CSRF protection, role-based access, and audit logging. Integrated Sandata and HHAeXchange export formats, plus AI-assisted workflows via Claude (AWS Bedrock) and Gemini.",
     outcome:
-      "Live at rayhealthevv.com with automated testing, linting, security scanning, and CI/CD pipelines. One codebase serving web, mobile, and backend — designed to meet state Medicaid reporting requirements.",
+      "Live at rayhealthevv.com with automated testing, linting, security scanning, and CI/CD pipelines. Shared domain models keep web, mobile, and backend in lockstep — designed to meet state Medicaid reporting requirements.",
     stack: ["TypeScript", "React", "Vite", "Node.js", "Express", "PostgreSQL", "Capacitor", "AWS Bedrock", "Gemini", "Vercel"],
     links: { live: "https://rayhealthevv.com" },
     accent: "iris",
@@ -168,7 +168,7 @@ export const PROJECTS: Project[] = [
     build:
       "A cross-platform Expo / Expo Router app that's offline-first by design: it ships with a bundled exchange-rate snapshot, silently refreshes and caches fresh rates on-device when online, and falls back to the latest known rates (with a \"rates as of…\" note) when offline. A growing grid of tools — currency & unit converters, tip & split, world clock, phrasebook, flashlight & SOS — driven by a single tool catalog so new tools drop in fast.",
     outcome:
-      "Building toward a Play Store release with EAS, including in-app purchases via RevenueCat. One codebase targeting iOS, Android, and web.",
+      "Building toward a Play Store release with EAS, including in-app purchases via RevenueCat. One Expo app, shipped to iOS, Android, and web.",
     stack: ["React Native", "Expo", "Expo Router", "AsyncStorage", "RevenueCat", "EAS"],
     accent: "ember",
   },
@@ -287,7 +287,7 @@ export const SERVICES: Service[] = [
   },
   {
     title: "Mobile apps",
-    blurb: "Cross-platform iOS + Android apps from a single codebase, built with React Native / Expo.",
+    blurb: "Cross-platform iOS + Android apps built with React Native / Expo.",
     icon: Smartphone,
   },
   {

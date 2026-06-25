@@ -109,7 +109,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
       caption: "One calm workspace for scheduling, EVV, authorizations, credentialing, and audit.",
     },
     intro:
-      "RayHealth EVV is a deployed Electronic Visit Verification platform that home-care agencies use to verify and document every caregiver visit for Medicaid compliance. It spans a caregiver mobile app, a coordinator web app, and a backend — all from a single codebase — and is live in production for Pennsylvania agencies.",
+      "RayHealth EVV is a deployed Electronic Visit Verification platform that home-care agencies use to verify and document every caregiver visit for Medicaid compliance. It spans a caregiver mobile app, a coordinator web app, and a backend — all sharing one typed core — and is live in production for Pennsylvania agencies.",
     sections: [
       {
         heading: "The problem",
@@ -119,9 +119,9 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       {
-        heading: "One codebase, three surfaces",
+        heading: "A typed core, three surfaces",
         body: [
-          "The platform is a scalable monorepo with shared domain models and validation logic powering the web app, the mobile app (via Capacitor), and the backend from one source of truth. A scheduling, authorization, and credentialing rule lives in exactly one place and behaves identically everywhere.",
+          "The platform is a scalable monorepo where shared domain models and validation logic power the web app, the mobile app (via Capacitor), and the backend from one source of truth. A scheduling, authorization, or credentialing rule lives in exactly one place and behaves identically everywhere.",
           "That shared core is what keeps caregiver, coordinator, and state-export views of the same visit consistent down to the field.",
         ],
       },
@@ -158,7 +158,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     results: [
       { value: "Live", label: "In production at rayhealthevv.com" },
       { value: "6/6", label: "CMS ACT data elements" },
-      { value: "3-in-1", label: "Web, mobile & backend from one codebase" },
+      { value: "Monorepo", label: "Shared domain models across web, mobile & backend" },
       { value: "100%", label: "PA DHS-aligned exports (Sandata / HHAeXchange)" },
     ],
     links: { live: "https://rayhealthevv.com" },
