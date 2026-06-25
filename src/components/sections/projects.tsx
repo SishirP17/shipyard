@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ArrowUpRight, Github, ArrowRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/lib/content";
+import { CASE_STUDY_SLUGS } from "@/lib/case-studies";
 import { fadeUp, reveal, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -131,6 +133,20 @@ function ProjectCard({ project: p }: { project: Project }) {
           </span>
         ))}
       </div>
+
+      {/* Case study link */}
+      {CASE_STUDY_SLUGS.has(p.slug) && (
+        <Link
+          href={`/work/${p.slug}`}
+          className={cn(
+            "group/link relative mt-6 inline-flex items-center gap-1.5 text-sm font-medium transition-colors",
+            a.text
+          )}
+        >
+          Read case study
+          <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-0.5" />
+        </Link>
+      )}
     </motion.article>
   );
 }
