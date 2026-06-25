@@ -29,6 +29,9 @@ import {
 export const SITE = {
   name: "Shipyard",
   tagline: "software that ships",
+  // Canonical production URL — used for metadata, OG image, robots, sitemap.
+  // Update this if you add a custom domain.
+  url: "https://shipyard-sishir-phuyal-s-projects.vercel.app",
 };
 
 export const PROFILE = {
@@ -92,7 +95,7 @@ export type Project = {
   name: string;
   tagline: string;
   year: string;
-  status: "Live" | "In progress" | "Archived" | "Research";
+  status: "Live" | "In progress" | "Archived";
   problem: string;
   build: string;
   outcome: string;
@@ -183,22 +186,6 @@ export const PROJECTS: Project[] = [
       "Shipped on Vercel as a 4-person capstone team at the University of Louisville, working through security, CORS, and backend integration challenges.",
     stack: ["React", "Next.js", "Tailwind", "SQL", "Vercel"],
     accent: "aqua",
-  },
-  {
-    slug: "genetic-algorithm-research",
-    name: "Hybrid Optimization Research",
-    tagline: "Genetic Algorithms + Wisdom of Crowds for the Vertex Cover Problem.",
-    // TODO: confirm the year this research was done.
-    year: "2024",
-    status: "Research",
-    problem:
-      "Minimum Vertex Cover is NP-complete — exact solutions don't scale, so the quality of the heuristic is what matters.",
-    build:
-      "Investigated a hybrid metaheuristic combining Genetic Algorithms with a Wisdom-of-Crowds aggregation step, and benchmarked it against a standard Genetic Algorithm and Ant Colony Optimization.",
-    outcome:
-      "Compared all three approaches across graph datasets from 10 to 100+ nodes, analyzing solution quality and scaling behavior. TODO: add your headline finding (which approach won, and by how much).",
-    stack: ["Python", "Genetic Algorithms", "Metaheuristics", "Optimization"],
-    accent: "ember",
   },
   {
     slug: "student-ninja",
@@ -324,8 +311,7 @@ export type Social = {
 export const SOCIALS: Social[] = [
   { label: "Email", href: "mailto:sishir.phuyal03@gmail.com", handle: "sishir.phuyal03@gmail.com", icon: Mail },
   { label: "GitHub", href: "https://github.com/SishirPhuyal", handle: "@SishirPhuyal", icon: Github },
-  // TODO: replace with your real LinkedIn URL + handle.
-  { label: "LinkedIn", href: "https://linkedin.com/in/sishir-phuyal", handle: "/in/sishir-phuyal", icon: Linkedin },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/sishir-phuyal-3a3b33214/", handle: "/in/sishir-phuyal", icon: Linkedin },
   { label: "RayHealth EVV", href: "https://rayhealthevv.com", handle: "rayhealthevv.com", icon: Globe },
 ];
 

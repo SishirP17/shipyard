@@ -16,7 +16,6 @@ const STATUS: Record<Project["status"], string> = {
   Live: "text-emerald-300",
   "In progress": "text-amber-300",
   Archived: "text-zinc-500",
-  Research: "text-aqua-200",
 };
 
 export function Projects() {

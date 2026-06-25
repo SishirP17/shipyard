@@ -23,7 +23,7 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://example.com"),
+  metadataBase: new URL(SITE.url),
   title: {
     default: `${SITE.name} — ${PROFILE.name}, ${PROFILE.role}`,
     template: `%s · ${SITE.name}`,
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
+    url: SITE.url,
     title: `${SITE.name} — ${PROFILE.name}, ${PROFILE.role}`,
     description: PROFILE.summary,
     siteName: SITE.name,
