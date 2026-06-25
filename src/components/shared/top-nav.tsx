@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Code2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Code2, Menu, X } from "lucide-react";
 import { SITE, PROFILE } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
@@ -15,11 +15,12 @@ const LINKS = [
 ];
 
 /**
- * Fixed top navigation. Goes from transparent to glass once the user scrolls.
- * The mark is a monospace "{ }" bracket + initials — the builder motif.
+ * Fixed top navigation. Transparent → glass on scroll. Full links on desktop;
+ * a hamburger that opens a slide-down menu on mobile.
  */
 export function TopNav() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -27,6 +28,14 @@ export function TopNav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close the mobile menu on Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   return (
     <motion.header
@@ -38,14 +47,14 @@ export function TopNav() {
       <div
         className={cn(
           "transition-all duration-300",
-          scrolled
+          scrolled || menuOpen
             ? "border-b border-white/[0.06] bg-slate-950/70 backdrop-blur-xl"
             : "border-b border-transparent bg-transparent"
         )}
       >
         <nav className="container flex h-16 items-center justify-between">
           {/* Mark + wordmark lockup */}
-          <a href="#top" className="group flex items-center gap-2.5">
+          <a href="#top" className="group flex items-center gap-2.5" onClick={() => setMenuOpen(false)}>
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-iris-400 to-iris-600 text-white shadow-glow-iris">
               <Code2 className="h-4 w-4" />
             </span>
@@ -59,7 +68,7 @@ export function TopNav() {
             </span>
           </a>
 
-          {/* Links */}
+          {/* Desktop links */}
           <div className="hidden items-center gap-1 sm:flex">
             {LINKS.map((l) => (
               <a
@@ -75,11 +84,49 @@ export function TopNav() {
             </a>
           </div>
 
-          {/* Mobile CTA */}
-          <a href="#contact" className="btn-iris !px-4 !py-2 text-sm sm:hidden">
-            Contact
-          </a>
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-zinc-200 transition-colors hover:text-white sm:hidden"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </nav>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden sm:hidden"
+            >
+              <div className="container flex flex-col gap-1 pb-5 pt-2">
+                {LINKS.map((l) => (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-xl px-4 py-3 text-base text-zinc-300 transition-colors hover:bg-white/[0.04] hover:text-white"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+                <a
+                  href="#contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-iris mt-2 w-full"
+                >
+                  Get in touch
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.header>
   );

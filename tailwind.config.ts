@@ -78,7 +78,7 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       fontSize: {
-        hero: ["clamp(2.75rem, 7vw, 5.75rem)", { lineHeight: "1.0", letterSpacing: "-0.035em", fontWeight: "600" }],
+        hero: ["clamp(1.7rem, 6.4vw, 5.75rem)", { lineHeight: "1.04", letterSpacing: "-0.03em", fontWeight: "600" }],
         display: ["clamp(1.9rem, 4.5vw, 3.25rem)", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "600" }],
         title: ["clamp(1.4rem, 2.6vw, 2rem)", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
       },
