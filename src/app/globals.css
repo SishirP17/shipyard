@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Portfolio — design tokens
+   Slate-carbon base, iris/violet primary, cyan secondary.
+   Builder/terminal motifs (dot-grid, code brackets) — not military HUD.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --background: 6 7 13;
+    --foreground: 237 240 248;
+    --muted: 25 30 48;
+    --muted-foreground: 148 156 176;
+    --border: 255 255 255;
+    --ring: 138 99 255;
+    --radius: 0.875rem;
+  }
+
+  * {
+    @apply border-white/[0.06];
+  }
+
+  html {
+    @apply bg-slate-950 text-foreground antialiased;
+    color-scheme: dark;
+    font-feature-settings: "ss01", "cv11", "calt";
+  }
+
+  body {
+    @apply bg-slate-950 text-zinc-100 selection:bg-iris-400/30 selection:text-white;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(138, 99, 255, 0.10), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 100% 100%, rgba(63, 214, 240, 0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(138, 99, 255, 0.35); background-clip: padding-box; }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-iris-400/60 ring-offset-2 ring-offset-slate-950;
+  }
+
+  html { scroll-behavior: smooth; }
+}
+
+@layer components {
+  /* Glass surface — foundational panel */
+  .glass-panel {
+    @apply relative rounded-2xl bg-slate-800/40 backdrop-blur-xl;
+    background-image:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent 40%),
+      linear-gradient(180deg, transparent 70%, rgba(255, 255, 255, 0.015));
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      0 30px 60px -30px rgba(0, 0, 0, 0.85);
+  }
+
+  .glass-panel-strong {
+    @apply relative rounded-2xl bg-slate-800/60 backdrop-blur-2xl;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 50%);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 40px 80px -40px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Mono micro-label — terminal vibe, wide tracking */
+  .label-mono {
+    @apply font-mono text-[10px] uppercase tracking-widelabel text-zinc-400;
+  }
+
+  /* Live status dot */
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full;
+  }
+  .status-dot-iris { @apply bg-iris-400 animate-pulse-iris; }
+  .status-dot-aqua { @apply bg-aqua-300 animate-pulse-aqua; }
+
+  /* Gradient text — hero accents */
+  .text-gradient-iris {
+    background: linear-gradient(135deg, #ffffff 0%, #c4b1ff 45%, #8a63ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-aqua {
+    background: linear-gradient(135deg, #ffffff 0%, #7fe7fb 50%, #3fd6f0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Hairline dividers */
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* Buttons */
+  .btn-iris {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           text-sm font-medium text-white transition-all duration-300
+           bg-gradient-to-b from-iris-400 to-iris-600
+           shadow-glow-iris
+           hover:shadow-[0_0_60px_-10px_rgba(138,99,255,0.7)] hover:-translate-y-px
+           active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           text-sm font-medium text-zinc-200 transition-all duration-300
+           bg-white/[0.04] backdrop-blur-md border border-white/10
+           hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-px;
+  }
+
+  /* Chip / tag — used for tech stack pills */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10
+           bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-zinc-300;
+  }
+
+  /* Code-bracket frame — the builder motif replacing HUD corners.
+     Adds soft iris brackets at top-left / bottom-right of a relative box. */
+  .bracket-frame::before,
+  .bracket-frame::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: rgba(138, 99, 255, 0.55);
+    pointer-events: none;
+  }
+  .bracket-frame::before {
+    top: 10px; left: 10px;
+    border-top: 1.5px solid; border-left: 1.5px solid;
+    border-top-left-radius: 6px;
+  }
+  .bracket-frame::after {
+    bottom: 10px; right: 10px;
+    border-bottom: 1.5px solid; border-right: 1.5px solid;
+    border-bottom-right-radius: 6px;
+  }
+}
+
+@layer utilities {
+  .mask-fade-edges {
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(180deg, black 60%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, black 60%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
