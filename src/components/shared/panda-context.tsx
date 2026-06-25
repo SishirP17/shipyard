@@ -1,28 +1,18 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 type PandaCtx = { visible: boolean; toggle: () => void };
 
-const Ctx = createContext<PandaCtx>({ visible: true, toggle: () => {} });
-
-const STORAGE_KEY = "panda-visible";
+const Ctx = createContext<PandaCtx>({ visible: false, toggle: () => {} });
 
 export function PandaProvider({ children }: { children: React.ReactNode }) {
-  const [visible, setVisible] = useState(true);
+  // Always starts OFF on a fresh load. The choice is intentionally *not*
+  // persisted — it lives only in this provider, so it carries across in-session
+  // client navigation but resets to off whenever the app is reopened.
+  const [visible, setVisible] = useState(false);
 
-  // Restore the saved preference once on the client.
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored !== null) setVisible(stored === "true");
-  }, []);
-
-  const toggle = () =>
-    setVisible((v) => {
-      const next = !v;
-      localStorage.setItem(STORAGE_KEY, String(next));
-      return next;
-    });
+  const toggle = () => setVisible((v) => !v);
 
   return <Ctx.Provider value={{ visible, toggle }}>{children}</Ctx.Provider>;
 }

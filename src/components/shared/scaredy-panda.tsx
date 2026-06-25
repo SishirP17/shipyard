@@ -260,6 +260,11 @@ export function ScaredyPanda() {
 const WHITE = "#f7f7f4";
 const INK = "#1b1716";
 
+// A barely-there glow that hugs the panda's silhouette so it pops off the dark
+// backdrop without reading as a halo. drop-shadow follows the alpha shape.
+const GLOW =
+  "drop-shadow(0 0 2px rgba(255,255,255,0.22)) drop-shadow(0 0 5px rgba(255,255,255,0.08))";
+
 /* -------------------------------------------------------------------------- *
  * Running panda — chubby side-view quadruped, clean (no fur), facing right.
  * -------------------------------------------------------------------------- */
@@ -270,7 +275,7 @@ function Panda({ mood, scared, facing }: { mood: Mood; scared: boolean; facing: 
   return (
     <div
       className="relative h-full w-full select-none"
-      style={{ transform: `scaleX(${facing})`, transformOrigin: "center bottom" }}
+      style={{ transform: `scaleX(${facing})`, transformOrigin: "center bottom", filter: GLOW }}
     >
       {/* ground shadow */}
       <div
@@ -342,14 +347,20 @@ function Panda({ mood, scared, facing }: { mood: Mood; scared: boolean; facing: 
           <div className="absolute left-[17px] top-[12px] h-[14px] w-[11px] rotate-[18deg] rounded-full" style={{ background: INK }} />
           {scared ? (
             <div className="absolute left-[18px] top-[13px] h-[10px] w-[10px] rounded-full bg-white">
-              <div className="absolute left-1/2 top-[1px] h-[4px] w-[4px] -translate-x-1/2 rounded-full" style={{ background: INK }} />
+              <div className="absolute left-1/2 top-[1px] h-[4px] w-[4px] -translate-x-1/2 rounded-full" style={{ background: INK }}>
+                <span className="absolute left-[0.5px] top-[0.5px] h-[1.5px] w-[1.5px] rounded-full bg-white" />
+              </div>
             </div>
           ) : (
             <div className="absolute left-[19px] top-[15px] h-[8px] w-[8px] rounded-full bg-white">
-              <div className="absolute left-1/2 top-[2px] h-[4px] w-[4px] -translate-x-1/2 rounded-full" style={{ background: INK }} />
+              <div className="absolute left-1/2 top-[2px] h-[4px] w-[4px] -translate-x-1/2 rounded-full" style={{ background: INK }}>
+                <span className="absolute left-[0.5px] top-[0.5px] h-[1.5px] w-[1.5px] rounded-full bg-white" />
+              </div>
             </div>
           )}
-          <div className="absolute left-[30px] top-[18px] h-[5px] w-[8px] rounded-full" style={{ background: INK }} />
+          <div className="absolute left-[30px] top-[18px] h-[5px] w-[8px] rounded-full" style={{ background: INK }}>
+            <span className="absolute left-[1.5px] top-[0.5px] h-[1.5px] w-[2.5px] rounded-full bg-white/55" />
+          </div>
           {scared ? (
             <div className="absolute left-[30px] top-[24px] h-[5px] w-[5px] rounded-full" style={{ background: INK }} />
           ) : (
@@ -385,7 +396,7 @@ function ClimbingPanda({ up }: { up: boolean }) {
   const eyeTop = up ? 10 : 14;
 
   return (
-    <div className="relative h-full w-full origin-bottom animate-panda-hug select-none">
+    <div className="relative h-full w-full origin-bottom animate-panda-hug select-none" style={{ filter: GLOW }}>
       {/* body — upright oval hugging the stalk */}
       <div
         className="absolute left-[25px] top-[16px] h-[40px] w-[34px]"
@@ -397,11 +408,12 @@ function ClimbingPanda({ up }: { up: boolean }) {
       />
 
       {/* legs gripping low (feet point inward to the stalk) */}
-      <Limb wrap="left-[24px] top-[34px]" rot={18} anim={legAnim} delay={-0.23} w={11} h={24} />
-      <Limb wrap="left-[49px] top-[34px]" rot={-18} anim={legAnim} delay={-0.68} w={11} h={24} />
+      <Limb wrap="left-[24px] top-[34px]" rot={18} anim={legAnim} delay={-0.23} w={11} h={24} toes="bottom" />
+      <Limb wrap="left-[49px] top-[34px]" rot={-18} anim={legAnim} delay={-0.68} w={11} h={24} toes="bottom" />
 
-      {/* head — peeking up the tree, between the shoulders */}
-      <div className="absolute left-[27px] top-[8px] h-[30px] w-[30px]">
+      {/* head — peeking up the tree, sitting on top of the body/shoulders
+          (raised so it rests atop the torso rather than sinking into the belly) */}
+      <div className="absolute left-[27px] top-[-2px] h-[30px] w-[30px]">
         <div className="absolute left-[0px] top-[0px] h-[13px] w-[13px] rounded-full" style={{ background: INK }} />
         <div className="absolute right-[0px] top-[0px] h-[13px] w-[13px] rounded-full" style={{ background: INK }} />
         <div
@@ -424,8 +436,8 @@ function ClimbingPanda({ up }: { up: boolean }) {
 
       {/* arms reaching above the head to grip the stalk — drawn on top so the
           hand-over-hand pump is clearly visible */}
-      <Limb wrap="left-[26px] top-[-2px]" rot={20} anim={armAnim} delay={0} w={10} h={28} />
-      <Limb wrap="left-[48px] top-[-2px]" rot={-20} anim={armAnim} delay={-0.45} w={10} h={28} />
+      <Limb wrap="left-[26px] top-[-4px]" rot={20} anim={armAnim} delay={0} w={10} h={28} toes="top" />
+      <Limb wrap="left-[48px] top-[-4px]" rot={-20} anim={armAnim} delay={-0.45} w={10} h={28} toes="top" />
     </div>
   );
 }
@@ -439,6 +451,7 @@ function Limb({
   delay,
   w,
   h,
+  toes,
 }: {
   wrap: string;
   rot: number;
@@ -446,6 +459,7 @@ function Limb({
   delay: number;
   w: number;
   h: number;
+  toes?: "top" | "bottom";
 }) {
   return (
     <div
@@ -455,7 +469,22 @@ function Limb({
       <div
         className={cn("absolute inset-x-0 bottom-0 rounded-full", anim)}
         style={{ height: h, background: INK, animationDelay: `${delay * SLOW}s` }}
-      />
+      >
+        {toes && (
+          <span
+            className="absolute rounded-full"
+            style={{
+              left: w * 0.5 - 0.8,
+              top: toes === "top" ? 2 : undefined,
+              bottom: toes === "bottom" ? 2 : undefined,
+              width: 1.6,
+              height: 5,
+              background: WHITE,
+              opacity: 0.8,
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -477,11 +506,15 @@ function Leg({
   delay: number;
   dark?: boolean;
 }) {
+  const toe = dark ? 0.4 : 0.8;
   return (
     <div
       className={cn("absolute origin-top rounded-b-full rounded-t-md", className)}
       style={{ left, top, width: w, height: h, background: dark ? "#0f0c0b" : INK, animationDelay: `${delay * SLOW}s` }}
-    />
+    >
+      {/* one white split down the middle of the paw → reads as two little toes */}
+      <span className="absolute rounded-full" style={{ left: w * 0.5 - 0.8, bottom: 1.5, width: 1.6, height: 5, background: WHITE, opacity: toe }} />
+    </div>
   );
 }
 
