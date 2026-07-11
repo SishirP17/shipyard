@@ -5,15 +5,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, ArrowRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/lib/content";
-import { CASE_STUDY_SLUGS } from "@/lib/case-studies";
+import { REPORT_SLUGS } from "@/lib/reports/slugs";
+import { ACCENT } from "@/lib/accents";
 import { fadeUp, reveal, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-
-const ACCENT: Record<Project["accent"], { glow: string; text: string; ring: string }> = {
-  iris: { glow: "bg-iris-500/10", text: "text-iris-300", ring: "group-hover:border-iris-400/30" },
-  aqua: { glow: "bg-aqua-500/10", text: "text-aqua-200", ring: "group-hover:border-aqua-400/30" },
-  ember: { glow: "bg-ember-500/10", text: "text-ember-400", ring: "group-hover:border-ember-400/30" },
-};
 
 const STATUS: Record<Project["status"], string> = {
   Live: "text-emerald-300",
@@ -36,7 +31,7 @@ export function Projects() {
             Things I&apos;ve designed, built, and shipped.
           </motion.h2>
           <motion.p variants={fadeUp} className="mt-5 text-lg text-zinc-400">
-            A few projects that show how I think about problems — the constraint, the
+            A few projects that show how I think about problems: the constraint, the
             build, and what came out the other side.
           </motion.p>
         </motion.div>
@@ -146,8 +141,8 @@ function ProjectCard({ project: p }: { project: Project }) {
         ))}
       </div>
 
-      {/* Case study link */}
-      {CASE_STUDY_SLUGS.has(p.slug) && (
+      {/* Deep dive link */}
+      {(REPORT_SLUGS as readonly string[]).includes(p.slug) && (
         <Link
           href={`/work/${p.slug}`}
           className={cn(
@@ -155,7 +150,7 @@ function ProjectCard({ project: p }: { project: Project }) {
             a.text
           )}
         >
-          Read case study
+          Read the deep dive
           <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-0.5" />
         </Link>
       )}

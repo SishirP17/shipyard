@@ -146,22 +146,6 @@ export const PROJECTS: Project[] = [
     accent: "aqua",
   },
   {
-    slug: "pact",
-    name: "Pact",
-    logo: "/logos/pact.png",
-    tagline: "AI-guided legal paperwork on demand — from plain-English intake to a notarized document.",
-    year: "2026",
-    status: "In progress",
-    problem:
-      "Simple legal documents — NDAs, bills of sale, demand letters — are slow and intimidating. People don't know which form they need, let alone how to fill it out or get it notarized.",
-    build:
-      "A cross-platform Expo app (iOS, Android, web) that takes a plain-language description of your situation, classifies it to the right template with a Claude-backed triage step, walks you through filling the fields, takes payment via Stripe, and routes documents that need it to remote online notarization. Architected with clear seams — AI triage, payments, and notary each isolated behind a swappable interface.",
-    outcome:
-      "Phase-1 flow works end to end across platforms. Pact provides self-help document tools, not legal advice. TODO: note current templates / live integrations when ready.",
-    stack: ["React Native", "Expo", "TypeScript", "Anthropic (Claude)", "Stripe", "Vercel"],
-    accent: "iris",
-  },
-  {
     slug: "roamkit",
     name: "Roamkit",
     logo: "/logos/roamkit.svg",

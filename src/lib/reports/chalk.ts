@@ -1,0 +1,285 @@
+import type { ProjectReport } from "@/lib/reports/types";
+
+export const REPORT: ProjectReport = {
+  slug: "chalk",
+  title: "Chalk",
+  tagline: "Turn any lecture into chapters, notes, and quizzes you can actually study from.",
+  year: "2026",
+  role: "Solo: product, full-stack and AI pipeline",
+  treatment: "full",
+  intro:
+    "Chalk is an AI lecture-capture tool. Record a class live, upload a file, or paste a YouTube link, and it hands back a clickable table of contents, study notes, per-chapter quizzes, and a tutor you can ask questions. Under the hood it is a serverless media pipeline that survives being killed mid-job, which is a fun property to need.",
+  sections: [
+    {
+      id: "overview",
+      heading: "Overview",
+      body: [
+        "Chalk is a monorepo with a Next.js 16 web app that carries the entire backend (36 API routes) and an Expo mobile app that is a pure client of it. Storage is Neon serverless Postgres plus Vercel Blob for media, auth is a custom JWT system, billing is Stripe, and the AI work runs on exactly two pinned OpenAI models: whisper-1 for transcription and gpt-4o for everything language-shaped.",
+        "The core promise: a two-hour lecture goes in, and a navigable library item comes out, with chapters that jump the video to the right second.",
+      ],
+    },
+    {
+      id: "problem",
+      heading: "The problem",
+      body: [
+        "Lecture recordings are where studying goes to die. A two-hour video with no structure means scrubbing around hoping to spot the whiteboard changing. Notes apps do not know what was said, and transcription tools give you a wall of text with no map.",
+        "Students need the lecture broken into topics, summarized, and quizzable, without doing any of that work themselves. That is a pipeline problem, not a note-taking problem.",
+      ],
+    },
+    {
+      id: "architecture",
+      heading: "The processing pipeline",
+      body: [
+        "Every lecture takes one of three doors in. Uploads go straight from the browser to Vercel Blob using short-lived tokens, because serverless request bodies cap out long before video sizes do. Live recordings stream in as segments that get stitched into one file. YouTube links never download video at all: Chalk pulls the video's own caption track and skips transcription entirely, then plays the video through YouTube's embed.",
+        "Then the orchestrator takes over: extract mono 16 kHz audio with ffmpeg, transcribe with Whisper, and hand the transcript to gpt-4o to segment into chapters. Processing runs inside Next.js after(), which keeps working after the response is sent, and an atomic database claim stops two instances from processing the same lecture twice.",
+      ],
+    },
+    {
+      id: "stack-choices",
+      heading: "Why this stack",
+      body: [
+        "Neon's serverless Postgres driver speaks HTTP, which fits functions that appear and vanish constantly. The schema lives in code as a versioned migration array with idempotent DDL, because two racing instances both have to be safe to run the bootstrap. Vercel Blob stores raw media, stitched recordings, exported clips, and thumbnails.",
+        "ffmpeg ships as a static binary and gets spawned directly as a CLI, no wrapper library, which means fewer moving parts and no binary-path weirdness on Windows. Auth is deliberately homegrown but small: bcrypt password hashing, HS256 JWTs signed with jose, delivered as an HttpOnly cookie for web and a bearer header for mobile, with a token version claim so plan changes and forced sign-outs propagate within about two minutes.",
+      ],
+    },
+    {
+      id: "services",
+      heading: "Fighting the model, politely",
+      body: [
+        "Two whole subsystems exist because language models are unreliable narrators. First, timestamps: gpt-4o drifts up to 100 seconds when asked for chapter start times, so Chalk instead asks it to return a verbatim quote from where the chapter begins, then finds that quote in the real transcript to resolve the true time. Second, coverage: the model nondeterministically stops chaptering partway through, so a refill loop re-asks for the uncovered tail up to four times.",
+        "Quizzes get a two-pass treatment to kill the AI-quiz smell: a first pass drafts questions in a professor voice with misconception-based wrong answers, then a second pass acts as an exam editor and rewrites anything lazy or guessable. There is also a per-chapter deep dive, a whole-lecture quiz, and an ask-the-video feature that answers free-form questions with clickable timestamp citations.",
+      ],
+    },
+    {
+      id: "data-flow",
+      heading: "One lecture, end to end",
+      body: [
+        "The browser mints an upload token, pushes the video straight to Blob, creates the lecture row, and pokes the process route. The pipeline downloads to temp storage, checks the duration cap, meters the user's transcription minutes, extracts audio, and transcribes. Files over ten minutes are split into chunks that transcribe four at a time, and every finished chunk is checkpointed to the database.",
+        "That checkpointing matters because serverless functions get 300 seconds. If a run dies mid-transcription, the sweeper restarts it and it resumes from the saved chunks instead of paying Whisper twice. Lectures over 90 minutes get map-reduce chaptering in 30-minute windows. When segmentation lands, the lecture flips to ready, an overview generates from the chapter outline, and the viewer shows the clickable TOC.",
+      ],
+    },
+    {
+      id: "security",
+      heading: "Security, quotas, and money",
+      body: [
+        "Ownership checks live server-side in every route, including anonymous demo lectures that are scoped to a per-browser id. Admin routes sit behind a role gate. Rate limiting is a fixed-window limiter in Postgres that fails open on database trouble, backed by hard ceilings: 2 GB uploads, 4 hour media, 30 minute caps for anonymous users.",
+        "Whisper is the expensive step, so it is metered like a utility: free accounts get 300 transcription minutes a month, Pro gets 1500, and top-up packs exist for heavy semesters. Charging is idempotent per lecture, so retries never double-bill. Stripe handles the Pro subscription and one-time credit purchases through a signature-verified webhook that is the only code allowed to grant Pro.",
+      ],
+    },
+    {
+      id: "challenges",
+      heading: "Challenges and honest tradeoffs",
+      body: [
+        "The 300-second function ceiling shaped almost everything: the after() processing model, per-chunk checkpoints, claim locks with timeouts, and a daily cron sweeper that revives anything silent for six minutes and gives up after three attempts. There is no queue service because the checkpoints plus the sweeper turned out to be enough, and that is one less thing to run.",
+        "YouTube added its own drama by bot-checking datacenter IPs, so the importer requests captions the way a phone would, and the mobile app can even fetch captions client-side on its residential IP and hand them to the server. Chalk also has strong opinions about prose: every model response is banned from using em dashes, enforced in the prompt and then scrubbed with a regex, belt and suspenders. Raw transcripts are exempt because those are the speaker's words, not ours.",
+      ],
+    },
+    {
+      id: "outcomes",
+      heading: "Outcomes",
+      body: [
+        "Chalk runs in production on Vercel with the web app and a native mobile client sharing one backend. Three intake paths, a crash-tolerant pipeline, metered billing, and a study toolkit on top: chapters, notes, quizzes, deep dives, clip export, and ask-the-video.",
+        "The pipeline holds up on real inputs: four-hour lectures chunk, checkpoint, and chapter without babysitting, and the accounting stays correct even when the platform kills the process mid-job.",
+      ],
+    },
+  ],
+  diagram: {
+    caption: "Three ways in, one pipeline, one library.",
+    groups: [
+      { id: "clients", label: "Clients", nodeIds: ["web", "mobile"] },
+      { id: "pipeline", label: "Pipeline", nodeIds: ["blob", "process", "ffmpeg", "whisper", "gpt"] },
+      { id: "platform", label: "Platform", nodeIds: ["db", "stripe", "cron", "youtube"] },
+    ],
+    nodes: [
+      {
+        id: "web",
+        label: "Web app",
+        tech: "Next.js 16",
+        icon: "AppWindow",
+        accent: "aqua",
+        col: 0,
+        row: 0,
+        detail: {
+          what: "Marketing, library, the lecture viewer with clickable chapters, and all 36 API routes.",
+          why: "One Next.js app is the whole backend, so the mobile app gets a full API for free.",
+        },
+      },
+      {
+        id: "mobile",
+        label: "Mobile app",
+        tech: "Expo + React Native",
+        icon: "Smartphone",
+        accent: "aqua",
+        col: 0,
+        row: 1,
+        detail: {
+          what: "A native client for recording, importing, and studying, with tokens in SecureStore.",
+          why: "Pure client of the web API. Bonus: its residential IP can fetch YouTube captions when the server gets bot-checked.",
+          protocol: "REST with Authorization: Bearer JWT",
+        },
+      },
+      {
+        id: "blob",
+        label: "Vercel Blob",
+        tech: "client-direct upload",
+        icon: "Upload",
+        accent: "iris",
+        col: 1,
+        row: 0,
+        detail: {
+          what: "Stores raw uploads, recording segments, stitched files, clips, and thumbnails.",
+          why: "Browsers upload straight to Blob with short-lived tokens because function bodies cap at 4.5 MB and lectures do not.",
+          protocol: "tokened PUT from the browser",
+        },
+      },
+      {
+        id: "process",
+        label: "Pipeline orchestrator",
+        tech: "after() + claim lock",
+        icon: "Workflow",
+        accent: "iris",
+        col: 1,
+        row: 1,
+        detail: {
+          what: "Claims a lecture atomically, routes it down the upload, recording, or link branch, and tracks status.",
+          why: "Next.js after() keeps work alive past the response without a queue service; the DB claim stops double processing.",
+        },
+      },
+      {
+        id: "ffmpeg",
+        label: "ffmpeg",
+        tech: "static binary",
+        icon: "Video",
+        accent: "ember",
+        col: 2,
+        row: 0,
+        detail: {
+          what: "Extracts mono 16 kHz audio, splits 10-minute chunks, stitches recording segments, trims clips.",
+          why: "Spawned directly as a CLI for fewer moving parts. Audio lives only in temp storage and is never persisted.",
+        },
+      },
+      {
+        id: "whisper",
+        label: "Whisper",
+        tech: "whisper-1",
+        icon: "Mic",
+        accent: "iris",
+        col: 3,
+        row: 0,
+        detail: {
+          what: "Transcribes chunks four at a time with segment timestamps, checkpointing each chunk to Postgres.",
+          why: "Checkpoints mean a killed 300-second function resumes free instead of re-paying for transcription.",
+          protocol: "OpenAI audio.transcriptions, verbose_json",
+        },
+      },
+      {
+        id: "gpt",
+        label: "gpt-4o",
+        tech: "chapters, quizzes, tutor",
+        icon: "Sparkles",
+        accent: "iris",
+        col: 3,
+        row: 1,
+        detail: {
+          what: "Segments the transcript into chapters, writes notes and overviews, drafts and edits quizzes, answers questions.",
+          why: "Chapter times are resolved by matching the model's verbatim quotes against the real transcript, because asked directly it drifts up to 100 seconds.",
+          protocol: "chat completions, JSON mode",
+        },
+      },
+      {
+        id: "youtube",
+        label: "YouTube import",
+        tech: "captions only",
+        icon: "Youtube",
+        accent: "ember",
+        col: 0,
+        row: 2,
+        detail: {
+          what: "Pulls a video's own caption track for imported links. The video itself is never downloaded.",
+          why: "Captions skip Whisper entirely, and playback happens through YouTube's embed, which keeps costs near zero.",
+        },
+      },
+      {
+        id: "db",
+        label: "Neon Postgres",
+        tech: "serverless driver",
+        icon: "Database",
+        accent: "neutral",
+        col: 2,
+        row: 2,
+        detail: {
+          what: "Users, lectures, transcripts, chapters, quizzes, chunk checkpoints, rate limits, and the billing ledger.",
+          why: "An HTTP driver suits functions that appear and vanish. Migrations are idempotent because racing instances must both be safe.",
+        },
+      },
+      {
+        id: "stripe",
+        label: "Stripe",
+        tech: "Pro + top-ups",
+        icon: "CreditCard",
+        accent: "neutral",
+        col: 3,
+        row: 2,
+        detail: {
+          what: "Pro subscription plus one-time transcription credit packs, granted only by the verified webhook.",
+          why: "The webhook is the single writer that can grant Pro, and a ledger table makes credit grants idempotent.",
+          protocol: "Checkout + signature-verified webhooks",
+        },
+      },
+      {
+        id: "cron",
+        label: "Cron sweeper",
+        tech: "daily + on-load",
+        icon: "Timer",
+        accent: "neutral",
+        col: 1,
+        row: 2,
+        detail: {
+          what: "Revives pipelines silent for six minutes, gives up after three attempts, salvages abandoned recordings.",
+          why: "With a 300-second function ceiling, six silent minutes provably means a killed run. The sweeper is the safety net that replaces a queue.",
+        },
+      },
+    ],
+    edges: [
+      { from: "web", to: "blob", label: "direct upload", kind: "data" },
+      { from: "mobile", to: "web", label: "REST API" },
+      { from: "web", to: "process", label: "process" },
+      { from: "youtube", to: "process", label: "caption track", kind: "data" },
+      { from: "blob", to: "ffmpeg", label: "media", kind: "data" },
+      { from: "process", to: "ffmpeg", label: "extract audio" },
+      { from: "ffmpeg", to: "whisper", label: "10 min chunks", kind: "data" },
+      { from: "whisper", to: "gpt", label: "transcript", kind: "data" },
+      { from: "gpt", to: "db", label: "chapters + notes", kind: "data" },
+      { from: "process", to: "db", label: "status + checkpoints", kind: "data" },
+      { from: "cron", to: "process", label: "revive stalled", kind: "async" },
+      { from: "web", to: "stripe", label: "upgrade" },
+    ],
+  },
+  stack: ["Next.js 16", "React 19", "TypeScript", "OpenAI (whisper-1 + gpt-4o)", "Neon Postgres", "Vercel Blob", "ffmpeg", "Stripe", "Expo", "Tailwind v4"],
+  results: [
+    { value: "36", label: "API routes in one backend" },
+    { value: "3", label: "Ways in: record, upload, YouTube" },
+    { value: "4 hr", label: "Max lecture length, chunked and checkpointed" },
+    { value: "2", label: "Pinned models doing all the AI work" },
+  ],
+  chat: {
+    suggestedQuestions: [
+      "How does Chalk survive serverless timeouts mid-lecture?",
+      "Why does it match quotes instead of trusting timestamps?",
+      "How does the YouTube import avoid downloading video?",
+    ],
+    extraKnowledge: [
+      "Quotas: free accounts get 300 Whisper minutes per month and 3 deep dives; Pro gets 1500 minutes. Credit packs: 300 minutes for 3 dollars, 900 for 9. Anonymous demo users are capped at 30 minute uploads and roughly 6 minute recordings.",
+      "Chunking: audio splits at 10 minutes with stream-copy, and each chunk's true start time is derived by probing cumulative durations because copy mode splits on frame boundaries. Transcription concurrency is 4.",
+      "Chaptering: lectures over 90 minutes use map-reduce windows of 30 minutes with concurrency 2. The ask-the-video feature feeds up to 90K characters of transcript and cites timestamps that seek the player.",
+      "Auth: 30-day HS256 JWTs. Tokens are trusted for 60 seconds, then revalidated against the user row, and a token version claim lets an admin force sign-out everywhere within about two minutes.",
+      "The lecture status flow is uploaded, extracting, transcribing, segmenting, ready, with failed as the give-up state after three sweep attempts.",
+      "Chalk bans em dashes in every AI response, enforced in the prompt and scrubbed with a regex afterward. Raw Whisper transcripts are exempt because those are the speaker's words.",
+    ].join("\n"),
+  },
+  seo: {
+    schemaType: "SoftwareApplication",
+    description:
+      "Deep dive into Chalk, an AI lecture-capture tool: a crash-tolerant serverless pipeline that turns recordings, uploads, and YouTube links into chapters, notes, quizzes, and an ask-the-video tutor.",
+  },
+};
