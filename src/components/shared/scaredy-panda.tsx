@@ -205,7 +205,9 @@ export function ScaredyPanda() {
       ))}
 
       <motion.div
-        className={cn("fixed left-0 top-0", dancing ? "z-[130]" : "z-[55]")}
+        // While climbing he slips under the bamboo (z-[53]) so the stalk passes
+        // in front of him; otherwise he sits above it.
+        className={cn("fixed left-0 top-0", dancing ? "z-[130]" : climbing ? "z-[52]" : "z-[55]")}
         style={{ width: PW, height: PH }}
         initial={false}
         animate={dancing ? danceAnim : { x: pos.x, y: pos.y, scale: 1, rotate: 0 }}
@@ -240,7 +242,7 @@ export function ScaredyPanda() {
         <button
           type="button"
           onClick={handleClick}
-          aria-label="A shy panda. Click to startle it — or double-click for a surprise."
+          aria-label="A shy panda. Click to startle it, or double-click for a surprise."
           className="block h-full w-full cursor-pointer appearance-none border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-iris-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
         >
           {climbing ? (

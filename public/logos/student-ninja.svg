@@ -1,0 +1,24 @@
+<!--
+  Student Ninja mark: a ninja face under a mortarboard, headband tails flying,
+  stroke-based in the site's ember accent (#ffb454). Transparent background.
+  Reads at 16 to 40 px.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Student Ninja">
+  <g fill="none" stroke="#ffb454" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- head -->
+    <path d="M18 38 A16 16 0 0 0 50 38 A16 16 0 0 0 46 28 H22 A16 16 0 0 0 18 38 Z"/>
+    <!-- mortarboard -->
+    <path d="M12 22 L34 14 L56 22 L34 30 Z"/>
+    <!-- tassel -->
+    <path d="M56 22 V32"/>
+    <!-- headband tails -->
+    <path d="M18 34 C11 36 8 40 5 45"/>
+    <path d="M19 39 C14 41 12 44 10 48"/>
+  </g>
+  <!-- eyes peeking through the mask gap -->
+  <g fill="#ffb454">
+    <circle cx="28" cy="38" r="2.4"/>
+    <circle cx="40" cy="38" r="2.4"/>
+    <circle cx="56" cy="34" r="2.6"/>
+  </g>
+</svg>

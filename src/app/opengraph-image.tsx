@@ -4,7 +4,7 @@ import { SITE, PROFILE } from "@/lib/content";
 // Branded social-share card, generated at build/request time (1200×630).
 // Shows when the site is shared on LinkedIn, X, iMessage, Slack, etc.
 
-export const alt = `${SITE.name} — ${PROFILE.name}, ${PROFILE.role}`;
+export const alt = `${SITE.name} · ${PROFILE.name}, ${PROFILE.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

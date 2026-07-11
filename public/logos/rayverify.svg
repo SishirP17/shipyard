@@ -1,0 +1,19 @@
+<!--
+  RayVerify mark: a shield with a verification check, stroke-based in the
+  site's iris accent (#8a63ff). Transparent background so the card chip's
+  glass surface shows through. Reads at 16 to 40 px.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="RayVerify">
+  <g fill="none" stroke="#8a63ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shield -->
+    <path d="M32 6 L52 14 V30 C52 44 44 52 32 58 C20 52 12 44 12 30 V14 Z"/>
+    <!-- verification check -->
+    <path d="M23 31 L30 38 L42 25"/>
+  </g>
+  <!-- score dots: the 0 to 100 signal fusion -->
+  <g fill="#8a63ff">
+    <circle cx="26" cy="47" r="1.8" opacity="0.5"/>
+    <circle cx="32" cy="49" r="1.8" opacity="0.75"/>
+    <circle cx="38" cy="47" r="1.8"/>
+  </g>
+</svg>

@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const subject = `New project inquiry${types.length ? " — " + types.join(", ") : ""}`;
+  const subject = `New project inquiry${types.length ? ": " + types.join(", ") : ""}`;
 
   const text = [
     `New project inquiry from ${name || "someone"} (${email})`,

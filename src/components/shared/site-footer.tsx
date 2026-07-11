@@ -11,7 +11,7 @@ export function SiteFooter() {
             <Code2 className="h-3.5 w-3.5" />
           </span>
           <span className="font-display text-sm font-semibold text-white">{SITE.name}</span>
-          <span className="font-mono text-xs text-zinc-600">— {SITE.tagline}</span>
+          <span className="font-mono text-xs text-zinc-600">{`// ${SITE.tagline}`}</span>
         </div>
 
         <div className="flex items-center gap-4">
