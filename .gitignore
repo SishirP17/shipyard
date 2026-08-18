@@ -11,3 +11,9 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Agent working notes: local only, not part of the published repo
+MEMORY.md
+
+# Stale resume copy at the repo root. The served one is public/resume.pdf
+/Sishir Phuyal Resume.pdf
