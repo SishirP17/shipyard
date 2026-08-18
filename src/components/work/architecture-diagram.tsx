@@ -13,7 +13,7 @@
  * to the site's glass/iris design system.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   AppWindow,
   Banknote,
@@ -92,6 +92,7 @@ import type { DiagramData, DiagramNode } from "@/lib/reports/types";
 import { cn } from "@/lib/utils";
 import { NODE_ACCENT_HEX } from "@/lib/accents";
 import { DiagramNodePanel } from "@/components/work/diagram-node-panel";
+import { useOverlayDismiss } from "@/lib/use-overlay";
 
 /* Icon names allowed in diagram data. Kept as a registry because component
    references cannot cross the server/client boundary. */
@@ -163,21 +164,11 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
 
   // Fullscreen locks the page scroll behind the overlay. Escape closes the
   // node panel first if one is open, then exits fullscreen.
-  useEffect(() => {
-    if (!fullscreen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (selectedId) setSelectedId(null);
-      else setFullscreen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [fullscreen, selectedId]);
+  const onEscape = useCallback(() => {
+    if (selectedId) setSelectedId(null);
+    else setFullscreen(false);
+  }, [selectedId]);
+  useOverlayDismiss(fullscreen, onEscape);
 
   const rects = useMemo(() => {
     const m = new Map<string, Rect>();

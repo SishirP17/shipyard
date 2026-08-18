@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Github } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Github, LayoutDashboard } from "lucide-react";
 import { REPORTS } from "@/lib/reports";
-import type { ProjectReport, ReportImage } from "@/lib/reports/types";
+import type { ProjectReport } from "@/lib/reports/types";
 import { SITE, PROJECTS } from "@/lib/content";
 import type { Accent } from "@/lib/accents";
 import { ArchitectureDiagram } from "@/components/work/architecture-diagram";
 import { ReportToc } from "@/components/work/report-toc";
+import { ReportSection } from "@/components/work/report-section";
+import { ReportFigure } from "@/components/work/report-figure";
 import { ProjectChat } from "@/components/work/project-chat";
 
 export function generateStaticParams() {
@@ -133,12 +135,17 @@ export default async function DeepDivePage({
             <div className="label-mono">Role</div>
             <div className="mt-1 text-sm text-white">{report.role}</div>
           </div>
-          {(report.links?.live || report.links?.repo) && (
-            <div className="flex items-center gap-3">
+          {(report.links?.live || report.links?.repo || report.links?.app) && (
+            <div className="flex flex-wrap items-center gap-3">
               {report.links?.live && (
                 <a href={report.links.live} target="_blank" rel="noreferrer" className="btn-iris group text-sm">
                   Visit live site
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              )}
+              {report.links?.app && (
+                <a href={report.links.app.href} target="_blank" rel="noreferrer" className="btn-ghost group text-sm">
+                  <LayoutDashboard className="h-3.5 w-3.5" /> {report.links.app.label}
                 </a>
               )}
               {report.links?.repo && (
@@ -150,7 +157,7 @@ export default async function DeepDivePage({
           )}
         </div>
 
-        {report.cover && <Figure image={report.cover} className="mt-12" priority />}
+        {report.cover && <ReportFigure image={report.cover} className="mt-12" priority />}
       </section>
 
       {/* Body: TOC rail + article */}
@@ -163,19 +170,25 @@ export default async function DeepDivePage({
         <article className="max-w-3xl">
           <p className="text-lg leading-relaxed text-zinc-300">{report.intro}</p>
 
-          <div className="mt-14 space-y-14">
-            {report.sections.map((section) => (
-              <div key={section.id}>
-                <section id={section.id} className="scroll-mt-24">
-                  <h2 className="font-display text-title text-white">{section.heading}</h2>
-                  <div className="mt-4 space-y-4">
-                    {section.body.map((para, i) => (
-                      <p key={i} className="leading-relaxed text-zinc-400">
-                        {para}
-                      </p>
-                    ))}
-                  </div>
-                </section>
+          <div className="mt-14 space-y-4">
+            {report.sections.map((section, index) => (
+              <ReportSection
+                key={section.id}
+                id={section.id}
+                heading={section.heading}
+                // The first two carry the pitch, so they are open on arrival.
+                // Everything after is there for whoever wants the depth.
+                defaultOpen={index < 2}
+              >
+                <div className="space-y-4">
+                  {section.body.map((para, i) => (
+                    <p key={i} className="leading-relaxed text-zinc-400">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+
+                {section.image && <ReportFigure image={section.image} className="mt-8" />}
 
                 {section.id === diagramAfter && (
                   <div className="mt-10">
@@ -183,15 +196,16 @@ export default async function DeepDivePage({
                     <ArchitectureDiagram data={report.diagram} />
                   </div>
                 )}
-              </div>
+              </ReportSection>
             ))}
           </div>
 
-          {/* Gallery */}
+          {/* Gallery: still supported for reports that have not moved their
+              screenshots inline onto individual sections. */}
           {report.gallery && report.gallery.length > 0 && (
             <div className="mt-16 space-y-10">
               {report.gallery.map((img) => (
-                <Figure key={img.src} image={img} />
+                <ReportFigure key={img.src} image={img} />
               ))}
             </div>
           )}
@@ -252,34 +266,5 @@ export default async function DeepDivePage({
         />
       )}
     </main>
-  );
-}
-
-function Figure({
-  image,
-  className = "",
-  priority = false,
-}: {
-  image: ReportImage;
-  className?: string;
-  priority?: boolean;
-}) {
-  return (
-    <figure className={className}>
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-900/40 shadow-panel">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          width={1440}
-          height={900}
-          priority={priority}
-          className="h-auto w-full"
-          sizes="(max-width: 1024px) 100vw, 960px"
-        />
-      </div>
-      {image.caption && (
-        <figcaption className="mt-3 text-center text-sm text-zinc-500">{image.caption}</figcaption>
-      )}
-    </figure>
   );
 }

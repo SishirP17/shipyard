@@ -16,7 +16,14 @@ export type Accent = "iris" | "aqua" | "ember";
 export type NodeAccent = Accent | "neutral";
 
 export type ReportImage = { src: string; alt: string; caption?: string };
-export type ReportSection = { id: string; heading: string; body: string[] };
+export type ReportSection = {
+  id: string;
+  heading: string;
+  body: string[];
+  /** Screenshot shown inside this section, under its prose. Prefer this over
+   *  the page-level `gallery` so a shot sits next to what it illustrates. */
+  image?: ReportImage;
+};
 export type ReportResult = { value: string; label: string };
 
 /**
@@ -73,7 +80,12 @@ export type ProjectReport = {
   gallery?: ReportImage[];
   stack: string[];
   results: ReportResult[];
-  links?: { live?: string; repo?: string };
+  links?: {
+    live?: string;
+    repo?: string;
+    /** A second product surface, e.g. the signed-in console behind a marketing site. */
+    app?: { href: string; label: string };
+  };
   /** Omit to hide the "Ask about this project" chat on the page. */
   chat?: {
     suggestedQuestions: string[];

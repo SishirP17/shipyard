@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Github, ArrowRight, LayoutDashboard } from "lucide-react";
 import { PROJECTS, type Project } from "@/lib/content";
 import { REPORT_SLUGS } from "@/lib/reports/slugs";
 import { ACCENT } from "@/lib/accents";
@@ -104,6 +104,18 @@ function ProjectCard({ project: p }: { project: Project }) {
               className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-zinc-300 transition-colors hover:border-white/20 hover:text-white"
             >
               <Github className="h-4 w-4" />
+            </a>
+          )}
+          {p.links?.app && (
+            <a
+              href={p.links.app.href}
+              target="_blank"
+              rel="noreferrer"
+              title={p.links.app.label}
+              aria-label={`${p.name}: ${p.links.app.label}`}
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-zinc-300 transition-colors hover:border-white/20 hover:text-white"
+            >
+              <LayoutDashboard className="h-4 w-4" />
             </a>
           )}
           {p.links?.live && (
