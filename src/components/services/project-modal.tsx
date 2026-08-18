@@ -16,8 +16,8 @@ const TYPE_OPTIONS = [
   { id: "Something else", label: "Something else", icon: Plus },
 ];
 
-const TIMELINES = ["ASAP", "1–3 months", "3–6 months", "Flexible"];
-const BUDGETS = ["< $2k", "$2k – $5k", "$5k – $15k", "$15k+", "Let's discuss"];
+const TIMELINES = ["ASAP", "1 to 3 months", "3 to 6 months", "Flexible"];
+const BUDGETS = ["< $2k", "$2k to $5k", "$5k to $15k", "$15k+", "Let's discuss"];
 
 const STEPS = ["What you need", "Scope", "About you", "Review"];
 

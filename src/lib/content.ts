@@ -3,9 +3,12 @@
  *  SINGLE SOURCE OF TRUTH for the portfolio.
  *
  *  Everything on the site is driven from this file. To change the site, edit
- *  the values below. You should not need to touch any component.
+ *  the values below; you should not need to touch any component.
  *
- *  Items still needing your input are marked "TODO".
+ *  Writing rules (locked):
+ *   - No em dashes. No hyphens used as punctuation to join clauses.
+ *   - Compound words (offline-first) are fine.
+ *   - Human, natural tone. Mid-level technical depth. Light humor welcome.
  * ============================================================================
  */
 
@@ -52,11 +55,11 @@ export const PROFILE = {
 
   // Longer About paragraphs.
   about: [
-    "I'm a software engineer in Louisville who builds production software from the database up. At Investors Heritage I develop features in a live .NET platform used daily by agents and admin teams, and I rearchitected the team's data-access layer into a centralized query builder that's now the company-wide standard.",
+    "I'm a software engineer in Louisville who builds production software from the database up. At Investors Heritage I develop features in a live .NET platform used daily by agents and admin teams, and I rearchitected the team's data-access layer into a centralized query builder that is now the company-wide standard.",
     "Outside of that I build full-stack and AI-native products, and I ship them. Chalk is an AI lecture-capture platform running in production on a serverless pipeline built to survive being killed mid-job. RoamKit is live on the Google Play Store, offline-first across iOS, Android, and web. RayHealth EVV is a deployed home-care compliance platform I co-built, where I owned the caregiver mobile app and the 837P claims transport. I'm most interested in AI applications, autonomous coding agents, and large-scale systems: software that helps people move faster.",
   ],
 
-  // Focus areas: small chips in the About section.
+  // Focus areas, small chips in the About section.
   focus: [
     "AI Applications",
     "Autonomous Coding Agents",
@@ -125,7 +128,7 @@ export const PROJECTS: Project[] = [
       "Live at chalkrecap.com with Stripe subscriptions, a metered credit ledger with idempotent per-lecture billing, LTI 1.3 launch from Canvas and Moodle, spaced-repetition study packs, multi-document binders, and instructor engagement analytics. Android is in beta, iOS next.",
     stack: ["Next.js 16", "React 19", "TypeScript", "Groq + OpenAI", "Neon Postgres", "Vercel Blob", "Stripe", "LTI 1.3", "Expo"],
     links: { live: "https://chalkrecap.com" },
-    accent: "iris",
+    accent: "ember",
     featured: true,
   },
   {
@@ -164,6 +167,22 @@ export const PROJECTS: Project[] = [
     accent: "aqua",
   },
   {
+    slug: "rayverify",
+    name: "RayVerify",
+    logo: "/logos/rayverify.svg",
+    tagline: "Fraud detection and identity verification for Medicaid home-care programs.",
+    year: "2026",
+    status: "In progress",
+    problem:
+      "Medicaid home-care fraud is simple in kind and massive in volume: visits billed from the wrong place, two caregivers sharing one phone, shifts that overlap in ways physics disagrees with. States pay first and chase fraud later, and a score that says 87 with no reasons is useless in a hearing.",
+    build:
+      "A NestJS + Prisma backend where six pure-function detectors (impossible travel, shared device, duplicate visits, GPS anomaly, identity mismatch, abnormal duration) feed a weighted noisy-OR fusion, so each detector's share of the final 0 to 100 score falls out of the math and investigators see exactly what drove an 87. Every decision is hashed with SHA-256 and stored append-only, row-level security is forced on 19 tables so a forgotten where-clause returns zero rows instead of another tenant's data, and 150 Terraform-defined AWS resources (ECS Fargate, RDS, WORM evidence storage) are ready to plan-and-apply.",
+    outcome:
+      "A foundation-stage build that is honest about it: 27 Prisma models, 34 partitioned tables, versioned detectors with passing tests, a 28-path OpenAPI contract, and an investigator dashboard. The hard product decisions (explainable scoring, humans in the loop for adverse action) are made and written down.",
+    stack: ["NestJS", "Prisma", "PostgreSQL", "TypeScript", "Next.js 15", "Terraform", "AWS"],
+    accent: "iris",
+  },
+  {
     slug: "roamkit",
     name: "Roamkit",
     logo: "/logos/roamkit.svg",
@@ -173,7 +192,7 @@ export const PROJECTS: Project[] = [
     problem:
       "Travelers need quick utilities (currency, units, tips, time zones) exactly when they have no signal. Most apps break the moment you go offline.",
     build:
-      "A cross-platform Expo / Expo Router app that's offline-first by design: it ships with a bundled exchange-rate snapshot, silently refreshes and caches fresh rates on-device when online, and falls back to the latest known rates (with a \"rates as of…\" note) when offline. A growing grid of tools (currency & unit converters, tip & split, world clock, phrasebook, flashlight & SOS) driven by a single tool catalog so new tools drop in fast.",
+      "A cross-platform Expo / Expo Router app that's offline-first by design: it ships with a bundled exchange-rate snapshot, silently refreshes and caches fresh rates on-device when online, and falls back to the latest known rates (with a \"rates as of…\" note) when offline. A growing grid of tools (currency and unit converters, tip and split, world clock, phrasebook, flashlight and SOS) driven by a single tool catalog, so new tools drop in fast.",
     outcome:
       "Live on the Google Play Store after a 14-day closed beta and production review, with real in-app purchases through RevenueCat. One Expo codebase shipping to iOS, Android, and web, and a shared rate store that cut network usage to roughly one call per day.",
     stack: ["React Native", "Expo", "Expo Router", "AsyncStorage", "RevenueCat", "EAS"],
@@ -183,6 +202,7 @@ export const PROJECTS: Project[] = [
   {
     slug: "ion-water-qr",
     name: "ION Water QR",
+    logo: "/logos/ion-water-qr.svg",
     tagline: "A dynamic web app that simplifies client form submissions for Louisville ION Water.",
     year: "2025",
     status: "Live",
@@ -214,12 +234,12 @@ export const EXPERIENCE: Experience[] = [
     company: "Investors Heritage",
     role: "Software Developer",
     period: "May 2022 to Present",
-    note: "Intern (May 2022 – May 2025) · Full-time (May 2025 – Present)",
+    note: "Intern (May 2022 to May 2025) · Full-time (May 2025 to Present)",
     bullets: [
       "Build and improve features in a production .NET application used daily by agents and admin teams.",
-      "Refactored the backend into a centralized database class and query builder, replacing raw SQL with maintainable, dynamic methods, adopted company-wide as the standard querying approach.",
+      "Refactored the backend into a centralized database class and query builder, replacing raw SQL with maintainable, dynamic methods that were adopted company-wide as the standard querying approach.",
       "Write and optimize complex SQL queries and CRUD operations (e.g. policy-history tracking), improving performance and cutting unnecessary database calls.",
-      "Created and optimized batch jobs, including a monthly void-policy report emailed to agents, in active use for 2+ years.",
+      "Created and optimized batch jobs, including a monthly void-policy report emailed to agents that has been in active use for 2+ years.",
     ],
   },
 ];
@@ -246,7 +266,7 @@ export const CERTIFICATIONS: string[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  Services: "build with me"                                                 */
+/*  Services: "build with me"                                                  */
 /* -------------------------------------------------------------------------- */
 
 export type Service = {

@@ -13,7 +13,7 @@
  * to the site's glass/iris design system.
  */
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AppWindow,
   Banknote,
@@ -50,6 +50,8 @@ import {
   Lock,
   Mail,
   MapPin,
+  Maximize2,
+  Minimize2,
   MessageSquare,
   Mic,
   Navigation,
@@ -87,6 +89,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { DiagramData, DiagramNode } from "@/lib/reports/types";
+import { cn } from "@/lib/utils";
 import { NODE_ACCENT_HEX } from "@/lib/accents";
 import { DiagramNodePanel } from "@/components/work/diagram-node-panel";
 
@@ -155,7 +158,26 @@ const EDGE_BASE = "#3c4463";
 export function ArchitectureDiagram({ data }: { data: DiagramData }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [fullscreen, setFullscreen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Fullscreen locks the page scroll behind the overlay. Escape closes the
+  // node panel first if one is open, then exits fullscreen.
+  useEffect(() => {
+    if (!fullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (selectedId) setSelectedId(null);
+      else setFullscreen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [fullscreen, selectedId]);
 
   const rects = useMemo(() => {
     const m = new Map<string, Rect>();
@@ -177,21 +199,44 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
   const activeId = hoverId ?? selectedId;
 
   return (
-    <div className="relative">
+    <div
+      className={cn(
+        fullscreen
+          ? "fixed inset-0 z-[140] flex flex-col bg-[#06080f]/95 p-4 backdrop-blur-sm sm:p-8"
+          : "relative"
+      )}
+    >
       <style>{`@keyframes diagram-dash { to { stroke-dashoffset: -20; } }`}</style>
 
-      <div
-        ref={scrollRef}
-        className="overflow-x-auto rounded-2xl border border-white/[0.06] bg-slate-900/40 bg-dot-grid shadow-panel"
-      >
+      <div className={cn("relative", fullscreen && "min-h-0 flex-1")}>
+        <button
+          type="button"
+          onClick={() => setFullscreen((f) => !f)}
+          aria-label={fullscreen ? "Exit full screen" : "View full screen"}
+          title={fullscreen ? "Exit full screen (Esc)" : "View full screen"}
+          className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-[#0a0d18]/80 text-zinc-400 transition-colors hover:border-white/25 hover:text-white"
+        >
+          {fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </button>
+
+        <div
+          ref={scrollRef}
+          className={cn(
+            "overflow-x-auto rounded-2xl border border-white/[0.06] bg-slate-900/40 bg-dot-grid shadow-panel",
+            fullscreen && "h-full overflow-auto"
+          )}
+        >
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          width={width}
-          height={height}
           role="group"
           aria-label={data.caption ?? "Architecture diagram"}
-          className="block min-w-full"
-          style={{ minWidth: width }}
+          className={fullscreen ? "block h-full w-full" : "block h-auto w-full"}
+          // Inline: scale down to fit the container (viewBox keeps
+          // proportions), but never below 75% of natural size: past that,
+          // text stops being readable and horizontal scroll is the better
+          // tradeoff. Fullscreen: fill the viewport and let the SVG center
+          // itself (preserveAspectRatio "meet").
+          style={fullscreen ? undefined : { minWidth: Math.round(width * 0.75), maxWidth: width }}
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedId(null);
           }}
@@ -257,7 +302,7 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
             const a = rects.get(e.from);
             const b = rects.get(e.to);
             if (!a || !b) return null;
-            const { d, mx, my } = edgePath(a, b);
+            const { d } = edgePath(a, b);
             const isActive = activeId === e.from || activeId === e.to;
             const accent =
               data.nodes.find((n) => n.id === (activeId === e.from ? e.from : e.to))?.accent ?? "neutral";
@@ -279,29 +324,6 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
                       : undefined
                   }
                 />
-                {e.label && (
-                  <g opacity={activeId && !isActive ? 0.4 : 1}>
-                    <rect
-                      x={mx - e.label.length * 2.9 - 6}
-                      y={my - 8}
-                      width={e.label.length * 5.8 + 12}
-                      height={16}
-                      rx={8}
-                      fill="#0a0d18"
-                      stroke="rgba(255,255,255,0.08)"
-                    />
-                    <text
-                      x={mx}
-                      y={my + 3.5}
-                      textAnchor="middle"
-                      fill={isActive ? NODE_ACCENT_HEX[accent].text : "#8a92b3"}
-                      fontSize="9"
-                      className="font-mono"
-                    >
-                      {e.label}
-                    </text>
-                  </g>
-                )}
               </g>
             );
           })}
@@ -374,7 +396,45 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
               </g>
             );
           })}
+
+          {/* Edge labels: layered above the nodes, otherwise a long label on a
+              short edge disappears behind the neighboring box. The dark pill
+              keeps it legible when it overlaps a node border. */}
+          {data.edges.map((e, i) => {
+            if (!e.label) return null;
+            const a = rects.get(e.from);
+            const b = rects.get(e.to);
+            if (!a || !b) return null;
+            const { mx, my } = edgePath(a, b);
+            const isActive = activeId === e.from || activeId === e.to;
+            const accent =
+              data.nodes.find((n) => n.id === (activeId === e.from ? e.from : e.to))?.accent ?? "neutral";
+            return (
+              <g key={`label-${e.from}-${e.to}-${i}`} aria-hidden opacity={activeId && !isActive ? 0.4 : 1} pointerEvents="none">
+                <rect
+                  x={mx - e.label.length * 2.9 - 6}
+                  y={my - 8}
+                  width={e.label.length * 5.8 + 12}
+                  height={16}
+                  rx={8}
+                  fill="#0a0d18"
+                  stroke="rgba(255,255,255,0.08)"
+                />
+                <text
+                  x={mx}
+                  y={my + 3.5}
+                  textAnchor="middle"
+                  fill={isActive ? NODE_ACCENT_HEX[accent].text : "#8a92b3"}
+                  fontSize="9"
+                  className="font-mono"
+                >
+                  {e.label}
+                </text>
+              </g>
+            );
+          })}
         </svg>
+        </div>
       </div>
 
       {/* mobile scroll hint */}
@@ -384,7 +444,11 @@ export function ArchitectureDiagram({ data }: { data: DiagramData }) {
         {data.caption && <span className="text-xs text-zinc-500">{data.caption}</span>}
       </div>
 
-      <DiagramNodePanel node={selected} onClose={() => setSelectedId(null)} />
+      <DiagramNodePanel
+        node={selected}
+        onClose={() => setSelectedId(null)}
+        layer={fullscreen ? "overlay" : "base"}
+      />
     </div>
   );
 }

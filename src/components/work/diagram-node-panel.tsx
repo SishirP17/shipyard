@@ -15,10 +15,14 @@ import { springSoft } from "@/lib/motion";
 export function DiagramNodePanel({
   node,
   onClose,
+  layer = "base",
 }: {
   node: DiagramNode | null;
   onClose: () => void;
+  /** "overlay" lifts the phone bottom sheet above the fullscreen diagram (z-[140]). */
+  layer?: "base" | "overlay";
 }) {
+  const overlay = layer === "overlay";
   return (
     <AnimatePresence>
       {node && (
@@ -41,7 +45,7 @@ export function DiagramNodePanel({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/60 sm:hidden"
+            className={`fixed inset-0 bg-black/60 sm:hidden ${overlay ? "z-[145]" : "z-40"}`}
             onClick={onClose}
             aria-hidden
           />
@@ -53,7 +57,7 @@ export function DiagramNodePanel({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={springSoft}
-            className="glass-panel-strong fixed inset-x-3 bottom-3 z-50 max-h-[70vh] overflow-y-auto rounded-2xl p-6 sm:hidden"
+            className={`glass-panel-strong fixed inset-x-3 bottom-3 max-h-[70vh] overflow-y-auto rounded-2xl p-6 sm:hidden ${overlay ? "z-[150]" : "z-50"}`}
           >
             <PanelBody node={node} onClose={onClose} />
           </motion.div>

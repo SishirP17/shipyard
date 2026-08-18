@@ -1,0 +1,23 @@
+<!--
+  ION Water QR mark: a water droplet carrying QR finder squares, stroke-based
+  in the site's aqua accent (#3fd6f0). Transparent background. Reads at
+  16 to 40 px.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ION Water QR">
+  <!-- droplet -->
+  <path
+    d="M32 6 C32 6 13 28 13 40 A19 19 0 0 0 51 40 C51 28 32 6 32 6 Z"
+    fill="none" stroke="#3fd6f0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- QR finder pattern inside the drop -->
+  <g stroke="#3fd6f0" stroke-width="2.5" fill="none">
+    <rect x="23" y="32" width="8" height="8" rx="1.5"/>
+    <rect x="35" y="32" width="8" height="8" rx="1.5"/>
+    <rect x="23" y="44" width="8" height="8" rx="1.5"/>
+  </g>
+  <g fill="#3fd6f0">
+    <rect x="26" y="35" width="2" height="2"/>
+    <rect x="38" y="35" width="2" height="2"/>
+    <rect x="26" y="47" width="2" height="2"/>
+    <rect x="37" y="46" width="4" height="4" rx="1"/>
+  </g>
+</svg>
