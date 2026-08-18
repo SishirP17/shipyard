@@ -5,7 +5,7 @@ export const REPORT: ProjectReport = {
   title: "RayVerify",
   tagline: "Fraud detection and identity verification for Medicaid home-care programs.",
   year: "2026",
-  role: "Solo: architecture, backend and infrastructure design",
+  role: "2-engineer team: architecture, backend and infrastructure design",
   treatment: "full",
   intro:
     "RayVerify is the program-integrity sibling of RayHealth EVV. Where EVV proves a visit happened at a time and place, RayVerify asks the harder question: was it real? It layers identity, device, and location signals into an explainable fraud score from 0 to 100 that an investigator can act on before a payment goes out. It is a foundation-stage build: the scoring engine, data model, API, and cloud architecture are real, and I am upfront below about which parts are still designed rather than built.",
