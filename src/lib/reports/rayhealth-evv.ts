@@ -106,10 +106,10 @@ export const REPORT: ProjectReport = {
         "The newest layer is identity. RayVerify adds a consented selfie identity check at clock-in, so the record shows not just that someone's phone was at the right address, but that the right person was holding it. It refuses the capture clearly when storage is not configured rather than silently degrading, because a verification feature that quietly stops verifying is worse than one that is switched off.",
       ],
       image: {
-        src: "/work/rayhealth-clockin.jpg",
-        alt: "The caregiver clock-in screen: a geofence ring showing distance from the client's registered address",
+        src: "/work/rayhealth-mobile.jpg",
+        alt: "Three caregiver app screens: the day ahead, a live geofence map during a visit, and the completed visit record",
         caption:
-          "The map is feedback, not the decision. The geofence check runs on the server and deliberately ignores the phone's self-reported accuracy, because trusting it would let someone borrow 50 metres by claiming low confidence.",
+          "A caregiver's whole shift, left to right: what is next and how far away it is, the live geofence during the visit reading six metres inside the allowed zone, and the finished record with GPS verified and five tasks documented. The map is feedback, not the decision. That runs on the server, which is why a modified phone cannot talk its way inside the fence.",
       },
     },
     {
