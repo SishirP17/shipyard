@@ -332,7 +332,7 @@ export type Social = {
 
 export const SOCIALS: Social[] = [
   { label: "Email", href: "mailto:sishir.phuyal03@gmail.com", handle: "sishir.phuyal03@gmail.com", icon: Mail },
-  { label: "GitHub", href: "https://github.com/SishirPhuyal", handle: "@SishirPhuyal", icon: Github },
+  { label: "GitHub", href: "https://github.com/SishirP17", handle: "@SishirP17", icon: Github },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/sishir-phuyal-3a3b33214/", handle: "/in/sishir-phuyal", icon: Linkedin },
   { label: "RayHealth EVV", href: "https://rayhealthevv.com", handle: "rayhealthevv.com", icon: Globe },
 ];
