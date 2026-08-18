@@ -26,7 +26,7 @@ export function EasterEggs() {
       "color:#8a63ff;font-size:22px;font-weight:700;"
     );
     console.log(
-      "%cHey — you opened the console. I like you already.\n" +
+      "%cHey, you opened the console. I like you already.\n" +
         "Built from scratch by Sishir Phuyal.\n" +
         "Like what you see? → sishir.phuyal03@gmail.com\n" +
         "P.S. try the Konami code:  ↑ ↑ ↓ ↓ ← → ← → B A",

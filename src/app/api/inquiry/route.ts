@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const subject = `New project inquiry${types.length ? " — " + types.join(", ") : ""}`;
+  const subject = `New project inquiry${types.length ? ": " + types.join(", ") : ""}`;
 
   const text = [
     `New project inquiry from ${name || "someone"} (${email})`,
@@ -62,10 +62,10 @@ export async function POST(req: Request) {
       <h2 style="margin:0 0 4px;">New project inquiry</h2>
       <p style="margin:0 0 16px;color:#555;">via your Shipyard portfolio</p>
       <table style="border-collapse:collapse;width:100%;font-size:14px;">
-        <tr><td style="padding:6px 0;color:#888;width:90px;">From</td><td style="padding:6px 0;"><b>${esc(name) || "—"}</b> &lt;${esc(email)}&gt;</td></tr>
-        <tr><td style="padding:6px 0;color:#888;">Building</td><td style="padding:6px 0;">${esc(types.join(", ")) || "—"}</td></tr>
-        <tr><td style="padding:6px 0;color:#888;">Timeline</td><td style="padding:6px 0;">${esc(timeline) || "—"}</td></tr>
-        <tr><td style="padding:6px 0;color:#888;">Budget</td><td style="padding:6px 0;">${esc(budget) || "—"}</td></tr>
+        <tr><td style="padding:6px 0;color:#888;width:90px;">From</td><td style="padding:6px 0;"><b>${esc(name) || "not specified"}</b> &lt;${esc(email)}&gt;</td></tr>
+        <tr><td style="padding:6px 0;color:#888;">Building</td><td style="padding:6px 0;">${esc(types.join(", ")) || "not specified"}</td></tr>
+        <tr><td style="padding:6px 0;color:#888;">Timeline</td><td style="padding:6px 0;">${esc(timeline) || "not specified"}</td></tr>
+        <tr><td style="padding:6px 0;color:#888;">Budget</td><td style="padding:6px 0;">${esc(budget) || "not specified"}</td></tr>
       </table>
       <p style="margin:16px 0 4px;color:#888;font-size:14px;">Message</p>
       <p style="margin:0;white-space:pre-wrap;font-size:14px;line-height:1.6;">${esc(message) || "(none)"}</p>

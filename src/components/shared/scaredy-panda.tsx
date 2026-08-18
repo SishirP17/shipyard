@@ -22,12 +22,18 @@ const MARGIN = 22;
 const DOUBLE_WINDOW = 320; // ms — a 2nd click this fast = dance, otherwise he flees
 const SLOW = 1.4; // global pacing multiplier — everything runs 40% slower
 
-const ADJACENT: Record<number, number[]> = {
-  0: [1, 2],
-  1: [0, 3],
-  2: [0, 3],
-  3: [1, 2],
-};
+/* The corners form a loop: top-left → top-right → bottom-right → bottom-left →
+ * back to top-left. Every flee is one step along it, so the only real decision
+ * is which way round he goes. Choosing that fresh each time gave a 50% chance
+ * of doubling straight back, which is how he ended up bouncing along a single
+ * edge. Instead he keeps a direction and only occasionally turns around, and
+ * he has to commit to a turn for a couple of moves before he may turn again.
+ *
+ * Going round the loop also alternates horizontal runs with vertical ones, so
+ * the gallop and the bamboo climb both get airtime. */
+const CYCLE: number[] = [0, 1, 3, 2];
+const TURN_CHANCE = 0.22; // odds of reversing on any move that is allowed to
+const MIN_RUN = 2; // moves he must take after a turn before turning again
 
 type Pt = { x: number; y: number };
 type Mood = "idle" | "run" | "dance";
@@ -73,6 +79,8 @@ export function ScaredyPanda() {
   const lastDust = useRef(0);
   const dustId = useRef(0);
   const climbId = useRef(0);
+  const spin = useRef(1); // +1 goes round the CYCLE forwards, -1 backwards
+  const sinceTurn = useRef(MIN_RUN); // start eligible to turn on the first move
 
   useEffect(() => {
     const measure = () => setDims({ W: window.innerWidth, H: window.innerHeight });
@@ -96,6 +104,30 @@ export function ScaredyPanda() {
     };
   }, []);
 
+  // Toggling him off and on again sends him back to his home corner. Hiding
+  // only stops him rendering, it does not unmount this component, so without
+  // this he would return exactly as he left: mid-run, or still flagged as
+  // climbing with a stale bamboo waiting to reappear.
+  useEffect(() => {
+    if (!mounted) return;
+    clearTimeout(fleeTimer.current);
+    clearTimeout(scaredTimer.current);
+    clickCount.current = 0;
+    spin.current = 1;
+    sinceTurn.current = MIN_RUN;
+    setCorner(3);
+    setPos(cornerCoords(3, dims.W, dims.H));
+    setSpeed(reduce ? 0 : 0.9 * SLOW);
+    setMood("idle");
+    setScared(false);
+    setDancing(false);
+    setClimbing(false);
+    setClimbState(null);
+    setFacing(-1);
+    setDust([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, mounted]);
+
   const spawnDust = useCallback((x: number, y: number) => {
     const now = performance.now();
     if (now - lastDust.current < 55) return;
@@ -108,8 +140,14 @@ export function ScaredyPanda() {
   }, []);
 
   const flee = useCallback(() => {
-    const options = ADJACENT[corner];
-    const next = options[Math.floor(Math.random() * options.length)];
+    const idx = CYCLE.indexOf(corner);
+    if (sinceTurn.current >= MIN_RUN && Math.random() < TURN_CHANCE) {
+      spin.current = -spin.current;
+      sinceTurn.current = 0;
+    } else {
+      sinceTurn.current += 1;
+    }
+    const next = CYCLE[(idx + spin.current + CYCLE.length) % CYCLE.length];
     const target = cornerCoords(next, dims.W, dims.H);
     const dist = Math.hypot(target.x - pos.x, target.y - pos.y);
     const vertical = Math.abs(target.x - pos.x) < 1;
@@ -144,7 +182,11 @@ export function ScaredyPanda() {
   }, []);
 
   const handleClick = useCallback(() => {
-    if (dancing) return;
+    // Ignore clicks while he is already moving. flee() reads pos and corner,
+    // which are set to the destination the moment a run starts, so a second
+    // click mid-flight would restart him from where he is headed rather than
+    // where he is, stranding the bamboo and leaving the animation unfinished.
+    if (dancing || mood === "run") return;
     clickCount.current += 1;
     if (clickCount.current >= 2) {
       clearTimeout(fleeTimer.current);
@@ -157,7 +199,7 @@ export function ScaredyPanda() {
       clickCount.current = 0;
       flee();
     }, DOUBLE_WINDOW);
-  }, [dancing, dance, flee]);
+  }, [dancing, mood, dance, flee]);
 
   if (!mounted || !visible) return null;
 
@@ -205,7 +247,9 @@ export function ScaredyPanda() {
       ))}
 
       <motion.div
-        className={cn("fixed left-0 top-0", dancing ? "z-[130]" : "z-[55]")}
+        // While climbing he slips under the bamboo (z-[53]) so the stalk passes
+        // in front of him; otherwise he sits above it.
+        className={cn("fixed left-0 top-0", dancing ? "z-[130]" : climbing ? "z-[52]" : "z-[55]")}
         style={{ width: PW, height: PH }}
         initial={false}
         animate={dancing ? danceAnim : { x: pos.x, y: pos.y, scale: 1, rotate: 0 }}
@@ -224,6 +268,7 @@ export function ScaredyPanda() {
             setDancing(false);
             setScared(false);
             const home = cornerCoords(3, dims.W, dims.H);
+            sinceTurn.current = MIN_RUN; // he may pick a fresh direction from home
             setCorner(3);
             setFacing(home.x <= cx ? -1 : 1);
             setSpeed(reduce ? 0 : 0.9 * SLOW);
@@ -240,8 +285,14 @@ export function ScaredyPanda() {
         <button
           type="button"
           onClick={handleClick}
-          aria-label="A shy panda. Click to startle it — or double-click for a surprise."
-          className="block h-full w-full cursor-pointer appearance-none border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-iris-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          aria-label="A shy panda. Click to startle it, or double-click for a surprise."
+          aria-disabled={mood === "run" || dancing}
+          className={cn(
+            "block h-full w-full appearance-none border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-iris-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+            // While he is mid-run, mid-climb, or dancing, he is not a target:
+            // the pointer passes straight through so nothing invites a click.
+            mood === "run" || dancing ? "pointer-events-none cursor-default" : "cursor-pointer",
+          )}
         >
           {climbing ? (
             <ClimbingPanda up={climb?.up ?? true} />

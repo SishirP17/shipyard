@@ -5,7 +5,7 @@ export const REPORT: ProjectReport = {
   title: "RayHealth EVV",
   tagline: "A full-stack Electronic Visit Verification platform for home-care agencies.",
   year: "2026",
-  role: "Solo: full-stack, mobile and infrastructure",
+  role: "2-engineer team. Mine: the caregiver mobile app end to end, and the 837P/835 claims transport",
   treatment: "full",
   cover: {
     src: "/work/rayhealth-hero.png",
@@ -19,7 +19,7 @@ export const REPORT: ProjectReport = {
       id: "overview",
       heading: "Overview",
       body: [
-        "The platform is a Turborepo monorepo with four workspaces: a core package that owns the domain models and the database, an Express 5 API, a React web console, and an Expo caregiver app. Around 40 PostgreSQL tables, roughly 190 API route handlers, and about 668 tests hold it together.",
+        "The platform is a Turborepo monorepo with four workspaces: a core package that owns the domain models and the database, an Express 5 API, a React web console, and an Expo caregiver app. Around 40 PostgreSQL tables, roughly 190 API route handlers, and 1,081 tests across 141 test files hold it together, all behind required CI gates.",
         "The design goal was simple to say and hard to do: make Medicaid compliance a side effect of a normal workday. Schedule a visit, clock in, clock out, and the audit trail, state submission, and claim build themselves.",
       ],
     },
@@ -80,11 +80,20 @@ export const REPORT: ProjectReport = {
       ],
     },
     {
+      id: "caregiver-app",
+      heading: "The app a caregiver actually opens",
+      body: [
+        "Compliance is what the agency needs; it is not what makes a caregiver open the app. So the mobile surface grew into the whole workday. Shifts announce themselves with a soft repeating alarm and a full-screen overlay rather than a single notification that gets missed, delivered by server-driven push with SMS behind a per-user channel preference. Caregivers see what their verified visits are worth, log mileage for agency approval, submit availability and time-off requests, and message their agency without leaving the app.",
+        "Training lives there too: an in-app course player with resume-where-you-left-off, including a Pennsylvania Chapter 611 Direct Care Worker competency course of eight modules and a 25-question exam, with the completion evidence attached to the per-visit audit packet. Clock-out captures a verification-of-service e-signature and structured task and note documentation, so the evidence packet is complete the moment the visit ends.",
+        "The newest layer is identity. RayVerify adds a consented selfie identity check at clock-in, so the record shows not just that someone's phone was at the right address, but that the right person was holding it. It refuses the capture clearly when storage is not configured rather than silently degrading, because a verification feature that quietly stops verifying is worse than one that is switched off.",
+      ],
+    },
+    {
       id: "outcomes",
       heading: "Outcomes",
       body: [
-        "RayHealth EVV is live in production at rayhealthevv.com, aligned to Pennsylvania DHS requirements with all Cures Act data elements captured, Sandata submission wired end to end, and real 837P and 835 EDI handling. Adding the next state is a registry entry, not a refactor: New Jersey already exists in the codebase as a config object waiting for its production flag.",
-        "The delivery pipeline runs seven required CI checks including type checking, security scanning, and a job that verifies the audit triggers still refuse mutations. Around 668 tests keep the compliance math honest.",
+        "RayHealth EVV is live in production at rayhealthevv.com, aligned to Pennsylvania DHS requirements with all Cures Act data elements captured, Sandata submission wired end to end on a schedule, and real 837P and 835 EDI handling. Adding the next state is a registry entry, not a refactor: New Jersey already exists in the codebase as a config object waiting for its production flag.",
+        "The delivery pipeline runs seven required CI checks including type checking, security scanning, and a job that verifies the audit triggers still refuse mutations. 1,081 tests keep the compliance math honest, and the operational side is written down rather than improvised: deploy, monitoring, mobile and App Store release runbooks, a risk register, incident response, data retention, and encryption verification all live in the repo.",
       ],
     },
   ],
@@ -270,7 +279,7 @@ export const REPORT: ProjectReport = {
   stack: ["TypeScript", "React", "Vite", "Node.js", "Express 5", "PostgreSQL", "Knex", "Expo", "AWS Bedrock", "Turborepo", "Vercel"],
   results: [
     { value: "Live", label: "In production at rayhealthevv.com" },
-    { value: "~668", label: "Tests across core, app, web and mobile" },
+    { value: "1,081", label: "Tests across core, app, web and mobile" },
     { value: "7 yrs", label: "Audit retention, beyond the HIPAA floor" },
     { value: "837P", label: "Real X12 EDI claims out, 835 remits in" },
   ],

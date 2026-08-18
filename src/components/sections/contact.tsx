@@ -28,7 +28,7 @@ export function Contact() {
 
           <motion.p variants={fadeUp} className="relative mx-auto mt-5 max-w-xl text-lg text-zinc-400">
             I&apos;m always open to interesting problems, ambitious teams, and good
-            conversations. Whether it&apos;s a role, a collaboration, or just to say hi —
+            conversations. Whether it&apos;s a role, a collaboration, or just to say hi,
             my inbox is open.
           </motion.p>
 

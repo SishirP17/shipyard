@@ -7,6 +7,11 @@ export const REPORT: ProjectReport = {
   year: "2026",
   role: "Solo: product, design and mobile",
   treatment: "full",
+  cover: {
+    src: "/work/roamkit-hero.png",
+    alt: "RoamKit store graphic: an offline travel toolkit for iOS, Android and web",
+    caption: "Ten tools, all of them working in airplane mode.",
+  },
   intro:
     "Roamkit is an offline-first travel app: one Expo codebase shipping to iOS, Android, and the web, packed with the tools you actually reach for abroad. Currency and unit converters, tip and split, a world clock, a phrasebook that speaks, a real LED flashlight with SOS, sun times, a compass, a trip budget, and a 57-article survival guide. Every single one works in airplane mode, which is the entire point.",
   sections: [
@@ -15,7 +20,7 @@ export const REPORT: ProjectReport = {
       heading: "Overview",
       body: [
         "Roamkit is built with Expo and Expo Router, React Native 0.85, and React 19. The home screen is a grid of tools driven by a single catalog file, so adding a tool is a data entry plus a route. A dark navy design system with per-tool identity colors keeps it feeling like one product instead of eleven small ones.",
-        "Monetization is a one-time 4.99 Pro unlock through RevenueCat: no subscription, no ads, no tracking. The production build is through Google Play review with real billing enabled.",
+        "Monetization is a one-time 4.99 Pro unlock through RevenueCat: no subscription, no ads, no tracking. The app is live on the Google Play Store with real billing enabled, after a 14-day closed beta and production review.",
       ],
     },
     {
@@ -78,7 +83,7 @@ export const REPORT: ProjectReport = {
       id: "outcomes",
       heading: "Outcomes",
       body: [
-        "Roamkit is feature-complete for v1: ten live tools plus the survival guide, a coherent design system, and a web build on Vercel from the same codebase. The production Android build is in Google Play review with real billing enabled and testers onboard.",
+        "Roamkit shipped: it is live on the Google Play Store with ten tools plus the survival guide, a coherent design system, real RevenueCat billing, and a web build on Vercel from the same codebase. Getting there meant a 14-day closed beta with real testers, a full pre-production audit, and Google's production review.",
         "The offline-first architecture proved itself in the details: one shared rate store powers two tools, network usage dropped to roughly one call per day, and every screen can tell you exactly how much to trust the number it just showed you.",
       ],
     },
@@ -208,6 +213,19 @@ export const REPORT: ProjectReport = {
     ],
   },
   stack: ["React Native", "Expo", "Expo Router", "AsyncStorage", "RevenueCat", "EAS", "react-native-web", "Vercel"],
+  gallery: [
+    {
+      src: "/work/roamkit-currency.png",
+      alt: "RoamKit currency converter showing a conversion and a rate freshness line",
+      caption: "The converter always says which rates it used: live, saved, or built-in, and as of when.",
+    },
+    {
+      src: "/work/roamkit-survival.png",
+      alt: "RoamKit offline survival guide article list",
+      caption: "57 survival guide articles, searchable and entirely offline.",
+    },
+  ],
+  links: { live: "https://play.google.com/store/apps/details?id=com.roamkit.app" },
   results: [
     { value: "10", label: "Tools, all working offline" },
     { value: "57", label: "Offline survival guide articles" },

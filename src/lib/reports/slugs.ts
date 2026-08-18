@@ -13,7 +13,6 @@ export const REPORT_SLUGS = [
   "rayverify",
   "roamkit",
   "ion-water-qr",
-  "student-ninja",
 ] as const;
 
 export type ReportSlug = (typeof REPORT_SLUGS)[number];

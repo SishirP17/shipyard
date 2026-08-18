@@ -29,7 +29,7 @@ const fontMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} — ${PROFILE.name}, ${PROFILE.role}`,
+    default: `${SITE.name} · ${PROFILE.name}, ${PROFILE.role}`,
     template: `%s · ${SITE.name}`,
   },
   description: PROFILE.summary,
@@ -40,13 +40,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE.url,
-    title: `${SITE.name} — ${PROFILE.name}, ${PROFILE.role}`,
+    title: `${SITE.name} · ${PROFILE.name}, ${PROFILE.role}`,
     description: PROFILE.summary,
     siteName: SITE.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — ${PROFILE.name}`,
+    title: `${SITE.name} · ${PROFILE.name}`,
     description: PROFILE.summary,
   },
   icons: {

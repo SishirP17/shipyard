@@ -11,7 +11,6 @@ import { REPORT as chalk } from "@/lib/reports/chalk";
 import { REPORT as rayverify } from "@/lib/reports/rayverify";
 import { REPORT as roamkit } from "@/lib/reports/roamkit";
 import { REPORT as ionWaterQr } from "@/lib/reports/ion-water-qr";
-import { REPORT as studentNinja } from "@/lib/reports/student-ninja";
 
 export type { ProjectReport } from "@/lib/reports/types";
 
@@ -22,5 +21,4 @@ export const REPORTS: Record<string, ProjectReport> = {
   [rayverify.slug]: rayverify,
   [roamkit.slug]: roamkit,
   [ionWaterQr.slug]: ionWaterQr,
-  [studentNinja.slug]: studentNinja,
 };

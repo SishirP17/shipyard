@@ -5,7 +5,7 @@ export const REPORT: ProjectReport = {
   title: "Helix Studio",
   tagline: "An AI operating system for software engineering.",
   year: "2026",
-  role: "Solo: product, architecture, full-stack and AI",
+  role: "2-engineer team: product, architecture, full-stack and AI",
   treatment: "full",
   cover: {
     src: "/work/helix-agents.png",

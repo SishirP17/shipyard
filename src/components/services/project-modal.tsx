@@ -81,7 +81,7 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
     return lines.join("\n");
   }, [types, timeline, budget, message, name, email]);
 
-  const subject = `Project inquiry via Shipyard${types.length ? " — " + types.join(", ") : ""}`;
+  const subject = `Project inquiry via Shipyard${types.length ? ": " + types.join(", ") : ""}`;
   const mailto = `mailto:${RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief)}`;
 
   function go(next: number) {
@@ -214,7 +214,7 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
                         <Step title="Timeline" hint="When do you need it?">
                           <ChipRow options={TIMELINES} value={timeline} onChange={setTimeline} />
                         </Step>
-                        <Step title="Budget" hint="Ballpark is fine — no commitment.">
+                        <Step title="Budget" hint="Ballpark is fine, no commitment.">
                           <ChipRow options={BUDGETS} value={budget} onChange={setBudget} />
                         </Step>
                       </div>
@@ -274,7 +274,7 @@ export function ProjectModal({ open, onClose }: { open: boolean; onClose: () => 
                           </Row>
                           <Row k="Timeline">{timeline || "Flexible"}</Row>
                           <Row k="Budget">{budget || "Let's discuss"}</Row>
-                          <Row k="From">{name || "—"}</Row>
+                          <Row k="From">{name || "not specified"}</Row>
                           <Row k="Email">{email}</Row>
                           {message.trim() && <Row k="Notes">{message}</Row>}
                         </dl>
@@ -350,7 +350,7 @@ function SuccessView({ name, email, onClose }: { name: string; email: string; on
       </motion.div>
       <h4 className="mt-5 font-display text-xl font-semibold text-white">Message sent.</h4>
       <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-400">
-        Thanks{first ? `, ${first}` : ""} — it&apos;s in Sishir&apos;s inbox. You&apos;ll get a reply
+        Thanks{first ? `, ${first}` : ""}, it&apos;s in Sishir&apos;s inbox. You&apos;ll get a reply
         at <span className="text-zinc-200">{email}</span> soon.
       </p>
       <button onClick={onClose} className="btn-iris mt-6 text-sm">
