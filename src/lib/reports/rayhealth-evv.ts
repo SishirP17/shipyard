@@ -5,7 +5,7 @@ export const REPORT: ProjectReport = {
   title: "RayHealth EVV",
   tagline: "A full-stack Electronic Visit Verification platform for home-care agencies.",
   year: "2026",
-  role: "2-engineer team. Mine: the caregiver mobile app end to end, and the 837P/835 claims transport",
+  role: "2-engineer team. The caregiver mobile app was mine alone, design and build; the web console was shared",
   treatment: "full",
   cover: {
     src: "/work/rayhealth-hero.png",
@@ -19,9 +19,15 @@ export const REPORT: ProjectReport = {
       id: "overview",
       heading: "Overview",
       body: [
-        "The platform is a Turborepo monorepo with four workspaces: a core package that owns the domain models and the database, an Express 5 API, a React web console, and an Expo caregiver app. Around 40 PostgreSQL tables, roughly 190 API route handlers, and 1,081 tests across 141 test files hold it together, all behind required CI gates.",
+        "The platform is a Turborepo monorepo with four workspaces: a core package that owns the domain models and the database, an Express 5 API, the React admin console that agencies know as Ray Admin, and an Expo caregiver app. Around 40 PostgreSQL tables, roughly 190 API route handlers, and 1,081 tests across 141 test files hold it together, all behind required CI gates.",
         "The design goal was simple to say and hard to do: make Medicaid compliance a side effect of a normal workday. Schedule a visit, clock in, clock out, and the audit trail, state submission, and claim build themselves.",
       ],
+      image: {
+        src: "/work/rayhealth-command.jpg",
+        alt: "The command center: an AI briefing panel above open EVV exceptions, overdue training, and the day's visit operations",
+        caption:
+          "The command center answers the only question a coordinator has in the morning: is anything wrong today. Open exceptions surface first because they block a clean state submission.",
+      },
     },
     {
       id: "problem",
@@ -62,6 +68,11 @@ export const REPORT: ProjectReport = {
         "A recurring schedule materializes into assignments, checked for conflicts and caregiver eligibility. At the door, the caregiver clocks in: the API resolves the assignment, pulls the client's geofence anchor, and runs a Haversine distance check against a 150 meter radius. Outside the fence gets a 422 with the exact distance, plus an audit event. Inside, the visit row snapshots every Cures Act data point at that moment.",
         "Clock-out re-runs the geofence, detects exceptions, and marks the visit verified or flagged. From there the Sandata integration takes over: clients, employees, and visits are submitted as batches over REST, polled for per-record accept or reject, with monotonic sequence numbers on resubmission because Sandata demands them. Verified visits then feed claim generation, which applies the CMS 8-minute rule, scores denial risk, and emits a structurally valid 837P EDI file that goes to the clearinghouse over SFTP. Remittances come back as 835 files and post against the claims. That whole sentence used to be somebody's entire week of manual work.",
       ],
+      image: {
+        src: "/work/rayhealth-demo.png",
+        alt: "RayHealth EVV product demo showing haptic clock-in, the visit review queue, and the state export format",
+        caption: "A real visit, end to end: clock-in, the coordinator review queue, and the state EVV export.",
+      },
     },
     {
       id: "security",
@@ -70,6 +81,12 @@ export const REPORT: ProjectReport = {
         "PHI columns like Medicaid numbers are encrypted cell by cell with AES-256-GCM before they hit the database, with a random IV per write. Rate limits are tiered per surface, login attempts are capped, TOTP two-factor is available, and super-admin access uses WebAuthn passkeys. The audit middleware records every PHI read, write, and export with a server-generated correlation id, and the retention sweep archives seven years of history, which is longer than HIPAA's own floor.",
         "The AI copilot gets the same treatment. Every prompt is logged as a hash, never as text, because prompts can contain PHI. And when the copilot proposes an action, like enrolling a caregiver in training, it returns a typed, schema-validated proposal that a human must confirm before anything executes. The AI suggests. People decide.",
       ],
+      image: {
+        src: "/work/rayhealth-audit.jpg",
+        alt: "The audit events browser: a filterable table of phi.read events with actor ids, entities, and outcomes, labelled append-only",
+        caption:
+          "Nearly five thousand audit events on one small agency, and every PHI read is one of them. The append-only badge is not decoration: a database trigger refuses UPDATE and DELETE outright.",
+      },
     },
     {
       id: "challenges",
@@ -83,10 +100,17 @@ export const REPORT: ProjectReport = {
       id: "caregiver-app",
       heading: "The app a caregiver actually opens",
       body: [
+        "This app is the part of the platform that is mine alone. I designed it and built it, every screen and every flow, while the web console was shared work. The piece I care most about is location: the app tracks where the caregiver is against the client's registered geofence, and anyone who drifts outside the radius during a visit is flagged for a coordinator to review rather than silently accepted. The decision is made on the server, so a modified phone cannot talk its way inside the fence.",
         "Compliance is what the agency needs; it is not what makes a caregiver open the app. So the mobile surface grew into the whole workday. Shifts announce themselves with a soft repeating alarm and a full-screen overlay rather than a single notification that gets missed, delivered by server-driven push with SMS behind a per-user channel preference. Caregivers see what their verified visits are worth, log mileage for agency approval, submit availability and time-off requests, and message their agency without leaving the app.",
         "Training lives there too: an in-app course player with resume-where-you-left-off, including a Pennsylvania Chapter 611 Direct Care Worker competency course of eight modules and a 25-question exam, with the completion evidence attached to the per-visit audit packet. Clock-out captures a verification-of-service e-signature and structured task and note documentation, so the evidence packet is complete the moment the visit ends.",
         "The newest layer is identity. RayVerify adds a consented selfie identity check at clock-in, so the record shows not just that someone's phone was at the right address, but that the right person was holding it. It refuses the capture clearly when storage is not configured rather than silently degrading, because a verification feature that quietly stops verifying is worse than one that is switched off.",
       ],
+      image: {
+        src: "/work/rayhealth-clockin.jpg",
+        alt: "The caregiver clock-in screen: a geofence ring showing distance from the client's registered address",
+        caption:
+          "The map is feedback, not the decision. The geofence check runs on the server and deliberately ignores the phone's self-reported accuracy, because trusting it would let someone borrow 50 metres by claiming low confidence.",
+      },
     },
     {
       id: "outcomes",
@@ -95,6 +119,12 @@ export const REPORT: ProjectReport = {
         "RayHealth EVV is live in production at rayhealthevv.com, aligned to Pennsylvania DHS requirements with all Cures Act data elements captured, Sandata submission wired end to end on a schedule, and real 837P and 835 EDI handling. Adding the next state is a registry entry, not a refactor: New Jersey already exists in the codebase as a config object waiting for its production flag.",
         "The delivery pipeline runs seven required CI checks including type checking, security scanning, and a job that verifies the audit triggers still refuse mutations. 1,081 tests keep the compliance math honest, and the operational side is written down rather than improvised: deploy, monitoring, mobile and App Store release runbooks, a risk register, incident response, data retention, and encryption verification all live in the repo.",
       ],
+      image: {
+        src: "/work/rayhealth-golive.jpg",
+        alt: "The go-live readiness checklist: client, caregiver, 837 billing identity, and fee schedule complete, aggregator connection outstanding",
+        caption:
+          "Onboarding as a gate rather than a wish. An agency cannot bill until the 837 billing identity and the fee schedule are real, and each unfinished item links to the screen that fixes it.",
+      },
     },
   ],
   diagram: {
@@ -269,13 +299,6 @@ export const REPORT: ProjectReport = {
       { from: "db", to: "claims", label: "verified visits", kind: "data" },
     ],
   },
-  gallery: [
-    {
-      src: "/work/rayhealth-demo.png",
-      alt: "RayHealth EVV product demo showing haptic clock-in, the visit review queue, and the state export format",
-      caption: "A real visit, end to end: clock-in, the coordinator review queue, and the state EVV export.",
-    },
-  ],
   stack: ["TypeScript", "React", "Vite", "Node.js", "Express 5", "PostgreSQL", "Knex", "Expo", "AWS Bedrock", "Turborepo", "Vercel"],
   results: [
     { value: "Live", label: "In production at rayhealthevv.com" },
@@ -283,7 +306,10 @@ export const REPORT: ProjectReport = {
     { value: "7 yrs", label: "Audit retention, beyond the HIPAA floor" },
     { value: "837P", label: "Real X12 EDI claims out, 835 remits in" },
   ],
-  links: { live: "https://rayhealthevv.com" },
+  links: {
+    live: "https://rayhealthevv.com",
+    app: { href: "https://app.rayhealthevv.com", label: "Ray Admin console" },
+  },
   chat: {
     suggestedQuestions: [
       "How does GPS visit verification actually work?",

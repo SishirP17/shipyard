@@ -33,8 +33,11 @@ export const SITE = {
   name: "Shipyard",
   tagline: "software that ships",
   // Canonical production URL, used for metadata, OG image, robots, sitemap.
-  // Update this if you add a custom domain.
-  url: "https://sishir.dev",
+  // This must be the URL Vercel actually SERVES, not one that redirects to it:
+  // the apex sishir.dev 308s to www, so www is canonical. If you ever flip the
+  // primary domain in Vercel, change this to match or the sitemap and OG tags
+  // will start advertising a redirect.
+  url: "https://www.sishir.dev",
 };
 
 export const PROFILE = {
@@ -55,8 +58,8 @@ export const PROFILE = {
 
   // Longer About paragraphs.
   about: [
-    "I'm a software engineer in Louisville who builds production software from the database up. At Investors Heritage I develop features in a live .NET platform used daily by agents and admin teams, and I rearchitected the team's data-access layer into a centralized query builder that is now the company-wide standard.",
-    "Outside of that I build full-stack and AI-native products, and I ship them. Chalk is an AI lecture-capture platform running in production on a serverless pipeline built to survive being killed mid-job. RoamKit is live on the Google Play Store, offline-first across iOS, Android, and web. RayHealth EVV is a deployed home-care compliance platform I co-built, where I owned the caregiver mobile app and the 837P claims transport. I'm most interested in AI applications, autonomous coding agents, and large-scale systems: software that helps people move faster.",
+    "I'm a software engineer in Louisville who builds production software from the database up. At Investors Heritage, a life insurance carrier supporting more than 15,000 agents and 300,000 policies, I build the internal .NET platform behind agent servicing, policy administration, and finance. I rearchitected the team's data-access layer into a centralized query builder that is now the company-wide standard, migrated a legacy COBOL program to .NET, and built the quarterly engine that calculates every agent's bonus.",
+    "Outside of that I build full-stack and AI-native products, and I ship them. Chalk is an AI lecture-capture platform running in production on a serverless pipeline built to survive being killed mid-job. RoamKit is live on the Google Play Store, offline-first across iOS, Android, and web. RayHealth EVV is a deployed home-care compliance platform I co-built, where the caregiver mobile app was mine alone, design and build, along with the 837P claims transport. I'm most interested in AI applications, autonomous coding agents, and large-scale systems: software that helps people move faster.",
   ],
 
   // Focus areas, small chips in the About section.
@@ -107,12 +110,35 @@ export type Project = {
   links?: {
     live?: string;
     repo?: string;
+    /** A second product surface, e.g. the signed-in console behind a marketing site. */
+    app?: { href: string; label: string };
   };
   accent: "iris" | "aqua" | "ember";
   featured?: boolean;
 };
 
 export const PROJECTS: Project[] = [
+  {
+    slug: "rayhealth-evv",
+    name: "RayHealth EVV",
+    logo: "/logos/rayhealth-evv.png",
+    tagline: "A full-stack Electronic Visit Verification platform for home-care agencies.",
+    year: "2026",
+    status: "Live",
+    problem:
+      "Home-care agencies have to verify and document every caregiver visit for Medicaid compliance, but the tools to do it are clunky and fragmented across web, mobile, and state reporting.",
+    build:
+      "A four-workspace Turborepo (a shared domain core, an Express API, a React admin console, and an Expo caregiver app) built with one other engineer, with shared models and validation keeping all four in lockstep. The caregiver mobile app was mine alone: I designed the interface and built every screen, including GPS visit verification that flags any caregiver who moves outside the client's geofence radius for review, an offline store-and-forward queue that survives dead zones, e-signature verification of service, push and SMS notifications, in-app training courses, mileage and earnings, availability and time-off, and a consented selfie identity check at clock-in. I also built the claims and billing transport: 837P X12 claim submission with automated 835 remittance ingest, plus scheduled visit submission to state aggregators (Sandata, HHAeXchange).",
+    outcome:
+      "Live at rayhealthevv.com with 1,081 tests behind seven required CI gates, an append-only audit log enforced by a database trigger, cell-level PHI encryption, capability-based RBAC, and automated security scanning on every pull request.",
+    stack: ["TypeScript", "React", "Vite", "Node.js", "Express", "PostgreSQL", "Expo", "Turborepo", "AWS Bedrock", "Vercel"],
+    links: {
+      live: "https://rayhealthevv.com",
+      app: { href: "https://app.rayhealthevv.com", label: "Ray Admin console" },
+    },
+    accent: "iris",
+    featured: true,
+  },
   {
     slug: "chalk",
     name: "Chalk",
@@ -129,24 +155,6 @@ export const PROJECTS: Project[] = [
     stack: ["Next.js 16", "React 19", "TypeScript", "Groq + OpenAI", "Neon Postgres", "Vercel Blob", "Stripe", "LTI 1.3", "Expo"],
     links: { live: "https://chalkrecap.com" },
     accent: "ember",
-    featured: true,
-  },
-  {
-    slug: "rayhealth-evv",
-    name: "RayHealth EVV",
-    logo: "/logos/rayhealth-evv.svg",
-    tagline: "A full-stack Electronic Visit Verification platform for home-care agencies.",
-    year: "2026",
-    status: "Live",
-    problem:
-      "Home-care agencies have to verify and document every caregiver visit for Medicaid compliance, but the tools to do it are clunky and fragmented across web, mobile, and state reporting.",
-    build:
-      "Co-built with one other engineer as a four-workspace Turborepo (a shared domain core, an Express API, a React admin console, and an Expo caregiver app) with shared models and validation keeping all four in lockstep. I owned the caregiver mobile app end to end: GPS-verified clock-in/out, an offline store-and-forward queue that survives dead zones, e-signature verification of service, push and SMS notifications, in-app training courses, mileage and earnings, availability and time-off, and a consented selfie identity check at clock-in. I also built the claims and billing transport: 837P X12 claim submission with automated 835 remittance ingest, plus scheduled visit submission to state aggregators (Sandata, HHAeXchange).",
-    outcome:
-      "Live at rayhealthevv.com with 1,081 tests behind seven required CI gates, an append-only audit log enforced by a database trigger, cell-level PHI encryption, capability-based RBAC, and automated security scanning on every pull request.",
-    stack: ["TypeScript", "React", "Vite", "Node.js", "Express", "PostgreSQL", "Expo", "Turborepo", "AWS Bedrock", "Vercel"],
-    links: { live: "https://rayhealthevv.com" },
-    accent: "iris",
     featured: true,
   },
   {
@@ -234,11 +242,12 @@ export const EXPERIENCE: Experience[] = [
     company: "Investors Heritage",
     role: "Software Developer",
     period: "May 2022 to Present",
-    note: "Intern (May 2022 to May 2025) · Full-time (May 2025 to Present)",
+    note: "Intern (May 2022 to May 2025) · Full-time (May 2025 to Present) · A life insurance carrier supporting 15,000+ agents and 300,000+ policies",
     bullets: [
-      "Build and improve features in a production .NET application used daily by agents and admin teams.",
       "Refactored the backend into a centralized database class and query builder, replacing raw SQL with maintainable, dynamic methods that were adopted company-wide as the standard querying approach.",
-      "Write and optimize complex SQL queries and CRUD operations (e.g. policy-history tracking), improving performance and cutting unnecessary database calls.",
+      "Migrated a legacy COBOL program to a .NET application, rebuilding the agent hierarchy workflow that governs how policies are credited: business rules for inserting new agents into existing hierarchies, plus a split-hierarchy path for the policies that need one. Months of logic and test refinement, now running in production.",
+      "Built the quarterly agent bonus engine that turned the finance team's manual calculation into an algorithm. Finance loads each quarter's data, and the engine evaluates chargebacks, lapsed policies, and tier rules with complex queries across several finance databases to compute every agent's bonus, then generates the annual true-up table at Q4 close.",
+      "Build and improve features in a production .NET application used daily by agents and admin teams, and write the complex SQL and CRUD behind them (e.g. policy-history tracking).",
       "Created and optimized batch jobs, including a monthly void-policy report emailed to agents that has been in active use for 2+ years.",
     ],
   },

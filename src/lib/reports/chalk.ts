@@ -17,6 +17,12 @@ export const REPORT: ProjectReport = {
         "Chalk is a monorepo with a Next.js 16 web app that carries the entire backend (82 API routes) and an Expo app that is a pure client of it. Storage is Neon serverless Postgres plus Vercel Blob for media, auth is a custom JWT system, billing is Stripe, and transcription runs on Groq's Whisper with OpenAI as the fallback.",
         "The core promise: a two-hour lecture goes in, and a navigable library item comes out, with chapters that jump the video to the right second. Around that core sit the things a real course needs: binders that pull several documents into one study set, LMS launch from Canvas and Moodle, meeting imports from Zoom and Webex, and engagement analytics that show an instructor where the class actually stumbled.",
       ],
+      image: {
+        src: "/work/chalk-library.jpg",
+        alt: "The Chalk library: saved sessions as cards, each tagged with how it arrived and how many chapters it produced",
+        caption:
+          "The library. Each card carries the badge for how that lecture arrived, from a link or an upload, and the chapter count the pipeline produced.",
+      },
     },
     {
       id: "problem",
@@ -33,6 +39,11 @@ export const REPORT: ProjectReport = {
         "Every lecture takes one of three doors in. Uploads go straight from the browser to Vercel Blob using short-lived tokens, because serverless request bodies cap out long before video sizes do. Live recordings stream in as segments that get stitched into one file. YouTube links never download video at all: Chalk pulls the video's own caption track and skips transcription entirely, then plays the video through YouTube's embed.",
         "Then the orchestrator takes over: extract mono 16 kHz audio with ffmpeg, transcribe with Whisper, and hand the transcript to gpt-4o to segment into chapters. Processing runs inside Next.js after(), which keeps working after the response is sent, and an atomic database claim stops two instances from processing the same lecture twice.",
       ],
+      image: {
+        src: "/work/chalk-upload.png",
+        alt: "Chalk's upload screen, one of the ways a lecture enters the pipeline",
+        caption: "One of five doors in. Uploads go straight from the browser to blob storage, never through the function.",
+      },
     },
     {
       id: "stack-choices",
@@ -49,6 +60,12 @@ export const REPORT: ProjectReport = {
         "Chalk started on two pinned OpenAI models and got expensive, so the model layer became a routing decision instead of a constant. Transcription is the single biggest line in the bill, because it runs on every minute of every upload and cannot be skipped. Groq serves the same Whisper weights behind an OpenAI-compatible API at roughly a tenth of the price and, critically, still returns per-segment timestamps, which the entire pipeline is built on. OpenAI's own cheaper transcription model was disqualified for exactly that reason: it emits no segment timestamps at all. Without a Groq key everything falls back to whisper-1, so the cheap path was safe to deploy before the key existed.",
         "Language work splits the same way, by whether the task is a judgment call or mechanical. Chaptering, transcript refinement, and translation are structural: find the topic shifts, copy a verbatim quote, emit the same number of lines back. Those run on a cheap tier at six to eight times less. The calls a user actually judges the product on, ask-the-video, the tutor, study packs, and deep dives, stay on the strong model. Every model call is metered at one chokepoint in the OpenAI client wrapper, so the usage ledger cannot drift as features get added, and a global spend circuit breaker can stop the expensive paths cold.",
       ],
+      image: {
+        src: "/work/chalk-ask.jpg",
+        alt: "The details panel: an ask-the-video box above a generated full-lecture summary and takeaway bullets",
+        caption:
+          "Both of these are the expensive tier, and deliberately so. Ask-the-video and the whole-lecture summary are what a reader judges the product on, so they keep the strong model while the mechanical work moves down.",
+      },
     },
     {
       id: "services",
@@ -57,6 +74,12 @@ export const REPORT: ProjectReport = {
         "Two whole subsystems exist because language models are unreliable narrators. First, timestamps: gpt-4o drifts up to 100 seconds when asked for chapter start times, so Chalk instead asks it to return a verbatim quote from where the chapter begins, then finds that quote in the real transcript to resolve the true time. Second, coverage: the model nondeterministically stops chaptering partway through, so a refill loop re-asks for the uncovered tail up to four times.",
         "Quizzes get a two-pass treatment to kill the AI-quiz smell: a first pass drafts questions in a professor voice with misconception-based wrong answers, then a second pass acts as an exam editor and rewrites anything lazy or guessable. There is also a per-chapter deep dive, a whole-lecture quiz, and an ask-the-video feature that answers free-form questions with clickable timestamp citations.",
       ],
+      image: {
+        src: "/work/chalk-chapters.jpg",
+        alt: "The generated chapter list, each entry with a resolved timestamp and a one-line summary, plus regenerate and edit controls",
+        caption:
+          "Every timestamp here was resolved by finding the model's verbatim quote in the real transcript, not by trusting the time it gave. Regenerate and edit exist because the model is a draft, not an oracle.",
+      },
     },
     {
       id: "studying",
@@ -66,6 +89,12 @@ export const REPORT: ProjectReport = {
         "Binders extend the same idea past a single video: pull several documents into one study set, with PDF and DOCX extraction, a cheap-tier cleanup and OCR pass for scanned pages, then per-document digests, a combined study guide, quizzes, and ask across the whole set. There is also a transcript translation mode for lectures delivered in a language the reader does not follow, built on the same structural contract as refinement, where line count and timestamps are untouchable because seeking, auto-follow, and search all hang off them.",
         "For instructors there is engagement analytics: what students actually watched and which questions the class kept missing. The read model is owner-only and deliberately excludes the owner's own passes, so a teacher previewing their own lecture never skews the class picture. The waveform on the player used to be decorative, a hash of the lecture id shaped into sine curves, identical for an hour of speech or an hour of silence. It now measures real loudness second by second with ffmpeg, so you can see the quiet stretches before scrubbing into them.",
       ],
+      image: {
+        src: "/work/chalk-flashcards.jpg",
+        alt: "The study pack: a flashcard prompt with a due counter, alongside key terms, quiz, and insights tabs",
+        caption:
+          "Twelve cards due off one recording. The scheduler is pure and shared with the client, so the grade buttons can show the real next interval before you pick one.",
+      },
     },
     {
       id: "distribution",
@@ -82,6 +111,12 @@ export const REPORT: ProjectReport = {
         "The browser mints an upload token, pushes the video straight to Blob, creates the lecture row, and pokes the process route. The pipeline downloads to temp storage, checks the duration cap, meters the user's transcription minutes, extracts audio, and transcribes. Files over ten minutes are split into chunks that transcribe four at a time, and every finished chunk is checkpointed to the database.",
         "That checkpointing matters because serverless functions get 300 seconds. If a run dies mid-transcription, the sweeper restarts it and it resumes from the saved chunks instead of paying Whisper twice. Lectures over 90 minutes get map-reduce chaptering in 30-minute windows. When segmentation lands, the lecture flips to ready, an overview generates from the chapter outline, and the viewer shows the clickable TOC.",
       ],
+      image: {
+        src: "/work/chalk-transcript.jpg",
+        alt: "The lecture viewer: player on the left, timestamped transcript on the right with refine and translate controls",
+        caption:
+          "The far end of the pipeline. Every line keeps its timestamp, which is what makes seeking, search, and chapter resolution possible, and why refine and translate are held to returning the exact same line count.",
+      },
     },
     {
       id: "security",
@@ -106,6 +141,12 @@ export const REPORT: ProjectReport = {
         "Chalk is live at chalkrecap.com, running on Vercel with the web app and an Expo client sharing one backend of 82 API routes. Android is in beta and iOS is next. Intake comes from recording, upload, video links, Zoom, and Webex; distribution goes back out through Canvas and Moodle over LTI 1.3. On top sit chapters, notes, quizzes, spaced-repetition study packs, binders, deep dives, clip export, translation, and ask-the-video.",
         "The pipeline holds up on real inputs: four-hour lectures chunk, checkpoint, and chapter without babysitting, and the accounting stays correct even when the platform kills the process mid-job. The cost work matters as much as the reliability work, since a study tool that loses money on every upload is not a product. Routing transcription to Groq and the mechanical language work to a cheap tier cut the dominant per-hour costs by roughly an order of magnitude and six to eight times respectively, without touching the calls users judge the product on.",
       ],
+      image: {
+        src: "/work/chalk-mobile.jpg",
+        alt: "Three Android screens: the session library, a 28 chapter table of contents, and the binders tab holding course document sets",
+        caption:
+          "The same backend on a phone. The Expo client is a pure API consumer, so a feature shipped on the web is a screen away on Android rather than a second implementation.",
+      },
     },
   ],
   diagram: {
