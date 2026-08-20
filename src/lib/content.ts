@@ -88,7 +88,7 @@ export const PROFILE = {
     { group: "Frontend", items: ["React", "Next.js", "React Native", "Expo", "Tailwind", "Vite"] },
     { group: "Backend & Data", items: ["Node.js", "Express", "Django", ".NET", "PostgreSQL", "Prisma", "Knex", "SQL Server", "Neon"] },
     { group: "AI & Cloud", items: ["Anthropic (Claude)", "OpenAI API", "Groq", "AWS Bedrock", "Gemini API", "Vercel", "Stripe"] },
-    { group: "Practices", items: ["Git", "CI/CD", "REST APIs", "Monorepos (Turborepo)", "Automated Testing", "Docker", "EAS / app store releases"] },
+    { group: "Practices", items: ["Git", "CI/CD", "REST APIs", "Monorepos (Turborepo)", "Automated Testing", "Multi-tenant architecture", "Docker", "EAS / app store releases"] },
   ],
 } as const;
 
@@ -247,6 +247,8 @@ export const EXPERIENCE: Experience[] = [
       "Refactored the backend into a centralized database class and query builder, replacing raw SQL with maintainable, dynamic methods that were adopted company-wide as the standard querying approach.",
       "Migrated a legacy COBOL program to a .NET application, rebuilding the agent hierarchy workflow that governs how policies are credited: business rules for inserting new agents into existing hierarchies, plus a split-hierarchy path for the policies that need one. Months of logic and test refinement, now running in production.",
       "Built the quarterly agent bonus engine that turned the finance team's manual calculation into an algorithm. Finance loads each quarter's data, and the engine evaluates chargebacks, lapsed policies, and tier rules with complex queries across several finance databases to compute every agent's bonus, then generates the annual true-up table at Q4 close.",
+      "Built the company's Vendor Payment Request workflow: one form that captures the request, its debit and credit general-ledger line items, and supporting attachments, then generates a formatted payment packet and routes it to accounts payable, backed by a new invoice table keyed on vendor and invoice number so a duplicate invoice is rejected before it reaches AP. Finance leadership rolled it out company-wide with department demos.",
+      "Onboarded a new demo tenant onto the multi-tenant platform that already serves nine company brands: request validation at the API boundary, dynamic per-tenant database and schema resolution, access provisioning for demo users, and branded theme assets across the internal application and both the agent and client portals. Scoped entirely to the sandbox environment with no production exposure and no regression to the existing tenants, then seeded with synthetic policy data so the sales team can run product demos on real screens.",
       "Build and improve features in a production .NET application used daily by agents and admin teams, and write the complex SQL and CRUD behind them (e.g. policy-history tracking).",
       "Created and optimized batch jobs, including a monthly void-policy report emailed to agents that has been in active use for 2+ years.",
     ],
