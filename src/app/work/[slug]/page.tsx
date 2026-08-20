@@ -11,6 +11,7 @@ import { ArchitectureDiagram } from "@/components/work/architecture-diagram";
 import { ReportToc } from "@/components/work/report-toc";
 import { ReportSection } from "@/components/work/report-section";
 import { ReportFigure } from "@/components/work/report-figure";
+import { ReportVideoFigure } from "@/components/work/report-video";
 import { ProjectChat } from "@/components/work/project-chat";
 
 export function generateStaticParams() {
@@ -189,6 +190,8 @@ export default async function DeepDivePage({
                 </div>
 
                 {section.image && <ReportFigure image={section.image} className="mt-8" />}
+
+                {section.video && <ReportVideoFigure video={section.video} className="mt-8" />}
 
                 {section.id === diagramAfter && (
                   <div className="mt-10">

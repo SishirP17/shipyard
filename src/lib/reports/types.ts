@@ -16,6 +16,18 @@ export type Accent = "iris" | "aqua" | "ember";
 export type NodeAccent = Accent | "neutral";
 
 export type ReportImage = { src: string; alt: string; caption?: string };
+
+/** A short clip embedded in a section. Vertical clips are fine: the player
+ *  constrains by height so a 9:16 does not swallow the article column. */
+export type ReportVideo = {
+  src: string;
+  /** Frame shown before playback. Without one the browser picks whatever it
+   *  decodes first, which on a dark opening is usually a black rectangle. */
+  poster?: string;
+  alt: string;
+  caption?: string;
+};
+
 export type ReportSection = {
   id: string;
   heading: string;
@@ -23,6 +35,8 @@ export type ReportSection = {
   /** Screenshot shown inside this section, under its prose. Prefer this over
    *  the page-level `gallery` so a shot sits next to what it illustrates. */
   image?: ReportImage;
+  /** Clip shown inside this section, under its prose and any image. */
+  video?: ReportVideo;
 };
 export type ReportResult = { value: string; label: string };
 

@@ -80,6 +80,24 @@ export const REPORT: ProjectReport = {
       ],
     },
     {
+      id: "ad-spot",
+      heading: "Cutting the launch spot",
+      body: [
+        "The store listing and the social posts needed a video, so the spot was written and cut in house. Twenty three seconds: a castaway on a life raft signals a passing ship with the app's own SOS flashlight, then kisses the coconut he has been talking to. The live action is one generated shot from Kling 3.0. Everything else, which turned out to be most of it, was authored in ffmpeg.",
+        "The generated footage was not usable as delivered. Sampling the sky on its own showed luma sitting flat at 40 for six seconds and then surging to 132 the moment the flashlight fires, which is a model lighting an entire night sky with a phone torch. On screen it read as lightning. The fix was to measure that curve at half second intervals, fit a piecewise brightness correction to its inverse, and run a twelve frame deflicker over the result. The largest frame to frame luma change dropped from 92 units to 7.5.",
+        "The SOS is authored rather than generated, because no video model produces real Morse. It is a timed brightness modulation over the corrected footage: dot one unit, dash three, one unit between symbols, three between letters. The off beats land at 33 to 44 luma, which is the scene's own moonlight baseline, so the light reads as switching off rather than merely dimming.",
+        "The generated audio was thrown away entirely. It contained a thunder crack triggered by the flashlight and a line of dialogue nobody asked for. The ship's horn that replaces it is synthesized: a 105 Hz fundamental with a second horn detuned to 107.5 for the slow beat real horns have, harmonics at 210, 315, 420 and 525 Hz, then two cascaded low passes and a three tap echo to model what a kilometre of open water does to a sound. Distance is a spectral problem rather than a volume one, and the measurable result is a 12 dB tilt toward the low end. Both music beds are synthesized the same way, so nothing in the spot carries a licence.",
+        "The end card composites the real app icon, the ten real tool icons lifted from the home screen, and the Play badge. Those icons needed a superellipse alpha mask rather than a rounded rectangle: the app's own icons are squircles, and a circular corner arc cuts across them and leaves slivers of card background showing. The finished cut is mastered to -14 LUFS with a 4.7 LU range, so it plays at the same level as everything else in a feed instead of arriving quiet.",
+      ],
+      video: {
+        src: "/work/roamkit-ad-coconut.mp4",
+        poster: "/work/roamkit-ad-poster.jpg",
+        alt: "Roamkit launch spot: a castaway signals a passing ship using the app's SOS flashlight",
+        caption:
+          "One generated shot, then a lot of ffmpeg: corrected lighting, authored Morse, a synthesized ship's horn and score.",
+      },
+    },
+    {
       id: "outcomes",
       heading: "Outcomes",
       body: [
@@ -212,7 +230,7 @@ export const REPORT: ProjectReport = {
       { from: "store", to: "feed", label: "silent refresh", kind: "async" },
     ],
   },
-  stack: ["React Native", "Expo", "Expo Router", "AsyncStorage", "RevenueCat", "EAS", "react-native-web", "Vercel"],
+  stack: ["React Native", "Expo", "Expo Router", "AsyncStorage", "RevenueCat", "EAS", "react-native-web", "Vercel", "ffmpeg"],
   gallery: [
     {
       src: "/work/roamkit-currency.png",
@@ -237,6 +255,7 @@ export const REPORT: ProjectReport = {
       "How does offline-first currency conversion work?",
       "How does the flashlight SOS actually signal?",
       "How does one codebase ship to three platforms?",
+      "How was the launch spot made?",
     ],
     extraKnowledge: [
       "Numbers: 30 bundled currencies, 162 in the full catalog, 20 phrases in 9 languages across 4 categories, 27 world clock cities, 25 units across 4 categories, 57 survival articles in 11 categories.",
@@ -245,6 +264,7 @@ export const REPORT: ProjectReport = {
       "Pro gating: fully locked tools are trip budget and compass; phrasebook audio is free for English, Spanish, and Hindi; adding currencies beyond the curated 30 is Pro.",
       "The compass smooths the raw magnetometer x and y vector with a low-pass filter instead of smoothing the angle, which avoids the wraparound problem at north.",
       "Free tier: currency, units, tip and split, world clock, phrasebook, flashlight and SOS, sun times, and the survival guide.",
+      "Launch spot: 22.8s, 1080x1920. Live action is one Kling 3.0 generation; every other element was authored in ffmpeg. The model lit the whole sky from a phone torch (sky luma 40 to 132), so a piecewise brightness correction fitted to the measured curve plus a 12 frame deflicker brought the largest frame to frame change from 92 units down to 7.5. The Morse SOS, the ship horn (105 Hz fundamental, 107.5 Hz detuned partner, harmonics to 525 Hz, cascaded low passes for distance), and both music beds are synthesized, so the spot is licence free. End card icons use a superellipse mask because the app icons are squircles. Mastered to -14 LUFS, 4.7 LU range.",
     ].join("\n"),
   },
   seo: {
