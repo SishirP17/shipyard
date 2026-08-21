@@ -29,6 +29,11 @@ export type ReportVideo = {
 };
 
 export type ReportSection = {
+  /** Also the URL hash and the DOM id. Avoid anything that reads as an ad
+   *  slot ("ad-spot", "banner", "sponsor", "promo"): EasyList ships
+   *  generic cosmetic filters like `###ad-spot`, so uBlock would hide the
+   *  whole section on every visitor's machine that runs it. Same goes for
+   *  asset filenames with "-ad-" in them. */
   id: string;
   heading: string;
   body: string[];

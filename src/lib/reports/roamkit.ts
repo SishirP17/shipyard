@@ -80,7 +80,7 @@ export const REPORT: ProjectReport = {
       ],
     },
     {
-      id: "ad-spot",
+      id: "launch-spot",
       heading: "Cutting the launch spot",
       body: [
         "The store listing and the social posts needed a video, so the spot was written and cut in house. Twenty three seconds: a castaway on a life raft signals a passing ship with the app's own SOS flashlight, then kisses the coconut he has been talking to. The live action is one generated shot from Kling 3.0. Everything else, which turned out to be most of it, was authored in ffmpeg.",
@@ -90,8 +90,8 @@ export const REPORT: ProjectReport = {
         "The end card composites the real app icon, the ten real tool icons lifted from the home screen, and the Play badge. Those icons needed a superellipse alpha mask rather than a rounded rectangle: the app's own icons are squircles, and a circular corner arc cuts across them and leaves slivers of card background showing. The finished cut is mastered to -14 LUFS with a 4.7 LU range, so it plays at the same level as everything else in a feed instead of arriving quiet.",
       ],
       video: {
-        src: "/work/roamkit-ad-coconut.mp4",
-        poster: "/work/roamkit-ad-poster.jpg",
+        src: "/work/roamkit-launch-spot.mp4",
+        poster: "/work/roamkit-launch-spot-poster.jpg",
         alt: "Roamkit launch spot: a castaway signals a passing ship using the app's SOS flashlight",
         caption:
           "One generated shot, then a lot of ffmpeg: corrected lighting, authored Morse, a synthesized ship's horn and score.",
