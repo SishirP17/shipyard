@@ -75,6 +75,14 @@ export const REPORT: ProjectReport = {
       },
     },
     {
+      id: "edi-claims",
+      heading: "Building X12 by hand",
+      body: [
+        "The 837P generator does not lean on a library. X12 is a rigid, positional text format from a decades-old EDI spec (ASC X12N 005010X222A1), so the code builds the interchange segment by segment: the ISA and GS envelope, the billing provider, then for each claim the subscriber, diagnosis codes, and every service line. It refuses to emit a file at all if required billing fields are missing, so a broken claim never leaves the building. The 835 side is the mirror image, a parser that reads whatever a payer sends back, auto-detecting the delimiter characters from the ISA envelope because trading partners do not all agree on one.",
+        "Matching a remittance to the original claim turns out to be simpler than the acronyms suggest. Every claim carries a control number when it goes out, and the payer echoes that same number back on the remittance, so posting a payment is just a lookup on that id. Submission itself runs through a pluggable transport, SFTP for real clearinghouses, an HTTP option for the ones that support it, and a sandbox simulator so the whole claim loop is demoable with zero live credentials. Incoming remittance files are deduped by content hash before they are posted, so a scheduled pull can never process the same file twice.",
+      ],
+    },
+    {
       id: "security",
       heading: "Security and compliance",
       body: [

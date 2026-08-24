@@ -9,6 +9,7 @@ import { SITE, PROJECTS } from "@/lib/content";
 import type { Accent } from "@/lib/accents";
 import { ArchitectureDiagram } from "@/components/work/architecture-diagram";
 import { ReportToc } from "@/components/work/report-toc";
+import { ReportSearch } from "@/components/work/report-search";
 import { ReportSection } from "@/components/work/report-section";
 import { ReportFigure } from "@/components/work/report-figure";
 import { ReportVideoFigure } from "@/components/work/report-video";
@@ -161,8 +162,13 @@ export default async function DeepDivePage({
         {report.cover && <ReportFigure image={report.cover} className="mt-12" priority />}
       </section>
 
+      {/* Search: jump straight to a section by keyword, e.g. "geofence" or "837P" */}
+      <section className="container mt-12 max-w-3xl">
+        <ReportSearch sections={report.sections} accent={accent} />
+      </section>
+
       {/* Body: TOC rail + article */}
-      <div className="container mt-16 grid grid-cols-1 gap-12 lg:grid-cols-[200px_minmax(0,1fr)]">
+      <div className="container mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[200px_minmax(0,1fr)]">
         <ReportToc
           items={report.sections.map((s) => ({ id: s.id, heading: s.heading }))}
           accent={accent}
